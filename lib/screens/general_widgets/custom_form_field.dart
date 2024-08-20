@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({super.key, required this.fieldName, required this.fieldHint, this.suffixIcon, this.obscureText});
+  const CustomTextFormField({super.key, required this.fieldName, required this.fieldHint, this.suffixIcon, this.obscureText, required this.controller});
   final String fieldName;
   final String fieldHint;
   final IconButton? suffixIcon;
   final bool? obscureText;
+  final TextEditingController controller;
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +32,8 @@ class CustomTextFormField extends StatelessWidget {
                   color: Theme.of(context).colorScheme.background
                 ),
                 child: TextFormField(
+                  controller: controller,
                   obscureText: obscureText?? false,
-                  obscuringCharacter: "*",
                   decoration: InputDecoration(
                     hintText: fieldHint,
                     hintStyle: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.40)),

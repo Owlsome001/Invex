@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/login_controller.dart';
+import 'package:sim/screens/general_widgets/spash_screen.dart';
 import 'package:sim/theme.dart';
 
 void main() {
@@ -11,10 +12,10 @@ class Sim extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'SIM',
       debugShowCheckedModeBanner: false,
       theme: simTheme,
-      home: LoginController.platformLoginScreen(),
+      home: const SplashScreen(),
     );
   }
 }

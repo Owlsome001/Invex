@@ -19,15 +19,18 @@ class _SimLoginFormState extends State<SimLoginForm> {
       children: [
         Expanded(
           flex: Platform.isAndroid? 5:25,
-          child: SizedBox()),
+          child: const SizedBox()),
         Form(
           child: Column(
             children:[
-              const CustomTextFormField(
-                fieldName: "Matricule",fieldHint: "Entrer votre matricule",),
+              CustomTextFormField(
+                controller: controller.idController,
+                fieldName: "Matricule",
+                fieldHint: "Entrer votre matricule",),
               const SizedBox(height: 10,),
               //Password Field
               CustomTextFormField(
+                controller : controller.passwordController,
                 fieldName: "Mot de passe",
                 fieldHint: "Entrer votre mot de passe",
                 obscureText: !controller.passwordVisible,
@@ -57,18 +60,41 @@ class _SimLoginFormState extends State<SimLoginForm> {
                   FormBouton(
                     boutonTitle: "Se connecter", 
                     onPress: (){
-                    debugPrint("Login processing");
+                      if(controller.validateForm()){
+                         controller.loginFormError.value = {
+                                "hasError":false, "errorText":""
+                              };
+                        debugPrint("Login is ready to be processed");
+                      }
                     }
                   ),
 
                   const SizedBox(height: 20,),
+                  
+                  ValueListenableBuilder(
+                    valueListenable: controller.loginFormError, builder: (context,value, child){
+                      if(value["hasError"]){
+                        return Center(
+                          child: Text(
+                            value["errorText"],
+                            style: const TextStyle(
+                              color: Colors.red
+                            ),
+                            ),
+                        
+                        );
+                      }
+                      return const SizedBox();
+                    }),
 
                   const Center(
                     child: Padding(
                       padding: EdgeInsets.all(8.0),
                       child: Text("Mot de passe oublié ? Contactez votre supérieur."),
                     ),
-                  )
+                  ),
+
+                 
               ]
           ),),
 
