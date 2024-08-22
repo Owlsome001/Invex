@@ -4,13 +4,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sim/screens/desktop/login/desktop_login.dart';
 import 'package:sim/screens/mobile/login/mobile_login.dart';
+import 'package:sim/services/user_service.dart';
 
 class LoginController {
   bool passwordVisible = false;
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController idController = TextEditingController();
 
-  ValueNotifier<Map<String, dynamic>> loginFormError = ValueNotifier({"hasError":false, "errorText":""}); 
+  static ValueNotifier<Map<String, dynamic>> loginFormError = ValueNotifier({"hasError":false, "errorText":""}); 
 
   static Widget platformLoginScreen(){
     if(Platform.isAndroid){
@@ -32,6 +33,10 @@ class LoginController {
         "hasError":false, "errorText":""
       };
     return true;}
+  }
+
+  Future<void> submitLoginForm() async{
+    await UserService.login(idController.text, passwordController.text);
   }
 
 }

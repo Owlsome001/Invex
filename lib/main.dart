@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:sim/controllers/login_controller.dart';
+import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/screens/general_widgets/spash_screen.dart';
 import 'package:sim/theme.dart';
 
 void main() {
+  AppController.initAppControler();
   runApp(const Sim());
 }
 

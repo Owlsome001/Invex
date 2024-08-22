@@ -59,12 +59,12 @@ class _SimLoginFormState extends State<SimLoginForm> {
 
                   FormBouton(
                     boutonTitle: "Se connecter", 
-                    onPress: (){
+                    onPress: () async{
                       if(controller.validateForm()){
-                         controller.loginFormError.value = {
+                         LoginController.loginFormError.value = {
                                 "hasError":false, "errorText":""
                               };
-                        debugPrint("Login is ready to be processed");
+                        await controller.submitLoginForm();
                       }
                     }
                   ),
@@ -72,7 +72,7 @@ class _SimLoginFormState extends State<SimLoginForm> {
                   const SizedBox(height: 20,),
                   
                   ValueListenableBuilder(
-                    valueListenable: controller.loginFormError, builder: (context,value, child){
+                    valueListenable: LoginController.loginFormError, builder: (context,value, child){
                       if(value["hasError"]){
                         return Center(
                           child: Text(
