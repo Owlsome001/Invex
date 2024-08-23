@@ -21,6 +21,7 @@ class _SimLoginFormState extends State<SimLoginForm> {
           flex: Platform.isAndroid? 5:25,
           child: const SizedBox()),
         Form(
+          key: controller.loginFormKey,
           child: Column(
             children:[
               CustomTextFormField(

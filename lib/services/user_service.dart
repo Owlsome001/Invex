@@ -23,12 +23,16 @@ class UserService {
          };
          break;
        case 401:
+         Map<String, dynamic> errorMessage = jsonDecode(e.message);
          LoginController.loginFormError.value = {
-              "hasError":true, "errorText":e.message.substring(6)
+              "hasError":true, "errorText":errorMessage["message"]
          };
          
          break;
        default:
+        LoginController.loginFormError.value = {
+              "hasError":true, "errorText":"Problème d'internet"
+        };
         break;
      }
      return null;

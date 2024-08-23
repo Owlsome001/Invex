@@ -1,7 +1,8 @@
 
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:realm/realm.dart';
+import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/screens/desktop/login/desktop_login.dart';
 import 'package:sim/screens/mobile/login/mobile_login.dart';
 import 'package:sim/services/user_service.dart';
@@ -10,6 +11,9 @@ class LoginController {
   bool passwordVisible = false;
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController idController = TextEditingController();
+  final _loginFormKey = GlobalKey<FormState>();
+
+  GlobalKey<FormState> get loginFormKey => _loginFormKey; 
 
   static ValueNotifier<Map<String, dynamic>> loginFormError = ValueNotifier({"hasError":false, "errorText":""}); 
 
@@ -36,7 +40,14 @@ class LoginController {
   }
 
   Future<void> submitLoginForm() async{
-    await UserService.login(idController.text, passwordController.text);
+    User? user = await UserService.login(idController.text, passwordController.text);
+    if(user!=null){
+       Navigator.pushAndRemoveUntil(
+                    _loginFormKey.currentContext!,
+                    MaterialPageRoute(
+                        builder: (context) => HomeController.platformHomeScreen()),
+                    (route) => false);
+    }
   }
 
 }

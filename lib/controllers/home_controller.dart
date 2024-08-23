@@ -8,7 +8,7 @@ import 'package:sim/screens/mobile/mobile_home.dart';
 class HomeController {
     
     
-    static Widget platformLoginScreen(){
+    static Widget platformHomeScreen(){
     if(Platform.isAndroid){
       return const MobileHomeScreen();
     }
