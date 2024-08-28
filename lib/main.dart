@@ -3,8 +3,8 @@ import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/screens/general_widgets/spash_screen.dart';
 import 'package:sim/theme.dart';
 
-void main() {
-  AppController.initAppControler();
+void main() async{
+  await AppController.initAppController();
   runApp(const Sim());
 }
 
