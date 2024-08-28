@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/login_controller.dart';
+import 'package:sim/models/models.dart' as models;
+import 'package:sim/repositories/user_repository.dart';
 
 class UserService {
-
+  final UserRepository _userRepository = UserRepository();
   static Future<User?> login(String username, String password) async{
     String payload = jsonEncode({
       "username":username,
@@ -37,5 +39,13 @@ class UserService {
      }
      return null;
     }
-  }  
+  } 
+
+  static Future<void> logOut() async {
+     return await AppController.sim.currentUser!.logOut();
+  }
+
+  models.User get user{
+    return _userRepository.user;
+  } 
 }

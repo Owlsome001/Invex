@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:sim/controllers/login_controller.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
 import 'package:sim/screens/general_widgets/form_btn.dart';
@@ -58,17 +59,34 @@ class _SimLoginFormState extends State<SimLoginForm> {
 
                   const SizedBox(height: 20,),
 
-                  FormBouton(
-                    boutonTitle: "Se connecter", 
-                    onPress: () async{
-                      if(controller.validateForm()){
-                         LoginController.loginFormError.value = {
-                                "hasError":false, "errorText":""
-                              };
-                        await controller.submitLoginForm();
+
+                  ValueListenableBuilder(
+                    valueListenable: LoginController.isSubmiting, builder: (context,value, child){
+                      if(value){
+                        return Center(
+                          child: LoadingAnimationWidget.horizontalRotatingDots(
+                            color:Theme.of(context).colorScheme.primary,
+                            size: Platform.isAndroid?30:50
+                            )
+                        
+                        );
                       }
-                    }
-                  ),
+                      return  FormBouton(
+                        boutonTitle: "Se connecter", 
+                        onPress: () async{
+                          
+                          if(controller.validateForm()){
+                            //#2 : Finish
+                            LoginController.isSubmiting.value=true;
+                            LoginController.loginFormError.value = {
+                                    "hasError":false, "errorText":""
+                                  };
+                            await controller.submitLoginForm();
+                          }
+                        }
+                      );
+                    }),
+                  
 
                   const SizedBox(height: 20,),
                   
