@@ -18,6 +18,8 @@ dependencies:
   loading_animation_widget: ^1.2.1
   cupertino_icons: ^1.0.6
   realm: ^3.4.1
+  google_fonts: ^6.2.1
+  bootstrap_icons: ^1.11.3
 
 dev_dependencies:
   flutter_test:
@@ -25,9 +27,12 @@ dev_dependencies:
 
   # This packages allows updating the laucher icon for all platform at once
   flutter_launcher_icons: "^0.13.1"
-  # This package allow renamin the app for all the platforms
+  # This package allow renaming the app for all the platforms
   rename_app: ^1.6.1
+  # This package allow creating the windows app installer directly in the build app 
+  msix: ^3.16.8
   flutter_lints: ^3.0.0
+
 
 flutter_launcher_icons:
   android: "launcher_icon"

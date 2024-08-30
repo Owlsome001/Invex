@@ -26,6 +26,7 @@ class UserService {
          break;
        case 401:
          Map<String, dynamic> errorMessage = jsonDecode(e.message);
+         LoginController.isSubmiting.value=false;
          LoginController.loginFormError.value = {
               "hasError":true, "errorText":errorMessage["message"]
          };
