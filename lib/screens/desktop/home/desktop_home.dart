@@ -1,3 +1,4 @@
+import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -6,10 +7,11 @@ import 'package:sim/screens/general_widgets/appbar_widget.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
 import 'package:sim/screens/desktop/report_and_analysis/desktop_report_and_analysis.dart';
 import 'package:sim/screens/desktop/stocks/desktop_stocks.dart';
+import 'package:sim/screens/general_widgets/nav_element.dart';
 
 class DesktopHomeScreen extends StatefulWidget {
-  const DesktopHomeScreen({super.key});
-
+  const DesktopHomeScreen({super.key, this.tabIndex=10});
+  final int tabIndex;
   @override
   State<DesktopHomeScreen> createState() => _DesktopHomeScreenState();
 }
@@ -17,10 +19,11 @@ class DesktopHomeScreen extends StatefulWidget {
 class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProviderStateMixin {
 
   late final TabController _tabController;
-  int tabIndex = 0;
+  late int tabIndex;
 
   @override
   void initState() {
+    tabIndex= widget.tabIndex;
     _tabController = TabController(length:  3, vsync: this, initialIndex: 0);
     if (kIsWeb) {
       BrowserContextMenu.disableContextMenu();
@@ -56,7 +59,11 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
               decoration: BoxDecoration(
                 color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
               ),
-              child: DesktopLeftNavigationBar(tabController: _tabController,),
+              child: DesktopLeftNavigationBar(tabController: _tabController, navBarOptions: const [
+                NavElement(title: "Tableau de bord",Icon(Icons.dashboard_customize)),
+                NavElement(title: "Stocks", Icon(BootstrapIcons.box_fill)),
+                NavElement(title: "Rapports & Analyses",Icon(BootstrapIcons.bar_chart_line_fill))
+              ],),
             )),
           Expanded(
             flex: 8,
@@ -66,10 +73,10 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
                 Expanded(
                   child: TabBarView(
                     controller: _tabController,
-                    children: const [
+                    children: [
                       DesktopDashbord(),
                       DesktopStocks(),
-                      DesktopReportAnalysis()
+                      const DesktopReportAnalysis()
                     ],),
                 ),
               ],

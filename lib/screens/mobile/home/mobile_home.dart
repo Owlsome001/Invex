@@ -66,7 +66,7 @@ class _MobileHomeScreenState extends State<MobileHomeScreen> with TickerProvider
             color: Theme.of(context).colorScheme.onBackground,
             
             )),
-          NavElement(title: "Stocks",Icon(
+          NavElement(title: "Stocks", Icon(
             BootstrapIcons.box_fill,
             color: Theme.of(context).colorScheme.onBackground,
           )),

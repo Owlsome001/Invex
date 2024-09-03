@@ -9,10 +9,10 @@ class HomeController {
     
     static ValueNotifier<String> desktopAppBarTitle = ValueNotifier("Tableau de bord");
     
-    static Widget platformHomeScreen(){
+    static Widget platformHomeScreen({int tabIndex=0}){
     if(Platform.isAndroid){
       return const MobileHomeScreen();
     }
-    return const DesktopHomeScreen();
+    return DesktopHomeScreen(tabIndex: tabIndex);
   }
 }

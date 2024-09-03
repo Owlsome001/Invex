@@ -233,6 +233,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.3.6"
+  data_table_2:
+    dependency: "direct main"
+    description:
+      name: data_table_2
+      sha256: f02ec9b24f44420816a87370ff4f4e533e15b274f6267e4c9a88a585ad1a0473
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.5.15"
   decimal:
     dependency: transitive
     description:
@@ -495,12 +503,12 @@ packages:
     dependency: transitive
     description:
       name: mime
-      sha256: "2e123074287cc9fd6c09de8336dae606d1ddb88d9ac47358826db698c176a1f2"
+      sha256: "801fd0b26f14a4a58ccb09d5892c3fbdeff209594300a542492cf13fba9d247a"
       url: "https://pub.dev"
     source: hosted
-    version: "1.0.5"
+    version: "1.0.6"
   msix:
-    dependency: "direct main"
+    dependency: "direct dev"
     description:
       name: msix
       sha256: c50d6bd1aafe0d071a3c1e5a5ccb056404502935cb0a549e3178c4aae16caf33
@@ -683,6 +691,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.6.1"
+  responsive_framework:
+    dependency: "direct main"
+    description:
+      name: responsive_framework
+      sha256: a8e1c13d4ba980c60cbf6fa1e9907cd60662bf2585184d7c96ca46c43de91552
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.5.1"
   sane_uuid:
     dependency: transitive
     description:
@@ -691,6 +707,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.1.0"
+  screen_retriever:
+    dependency: transitive
+    description:
+      name: screen_retriever
+      sha256: "6ee02c8a1158e6dae7ca430da79436e3b1c9563c8cf02f524af997c201ac2b90"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.9"
   shelf:
     dependency: transitive
     description:
@@ -848,6 +872,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.5"
+  window_manager:
+    dependency: "direct main"
+    description:
+      name: window_manager
+      sha256: d812d3189d23465d2e94baa2505a4462b46dde4939012ff370711c6897d747ae
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.9"
   xdg_directories:
     dependency: transitive
     description:

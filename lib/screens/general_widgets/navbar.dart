@@ -9,6 +9,7 @@ class NavBar extends StatelessWidget {
   const NavBar({super.key, required this.tabController, required this.navBarOptions});
   final TabController tabController;
   final List<NavElement> navBarOptions;
+
   @override
   Widget build(BuildContext context) {
     return !Platform.isAndroid?Column(
@@ -49,5 +50,31 @@ class NavBar extends StatelessWidget {
         ), 
         label: navItem.title)).toList()
         );
+  }
+}
+
+class CustomNavBar extends StatelessWidget {
+  const CustomNavBar({super.key, required this.navBarOptions});
+
+  final List<NavElement> navBarOptions;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: List.generate(navBarOptions.length, (index){
+        return CustomNavBarElementWigdet(
+          selected: navBarOptions[index].isSelected,
+          navIndex: index,
+          title: navBarOptions[index].title,
+          onTap: (){
+            if(navBarOptions[index].onTap!=null){
+              navBarOptions[index].onTap!();
+            }
+            },
+          icon: navBarOptions[index].icon ,
+          );
+      }),
+    );
   }
 }
