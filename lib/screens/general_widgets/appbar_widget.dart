@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/screens/general_widgets/profile_card_with_avatar.dart';

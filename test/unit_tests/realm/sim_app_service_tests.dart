@@ -1,5 +1,4 @@
 
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';

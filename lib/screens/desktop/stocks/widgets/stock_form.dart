@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/general_widgets/custom_dropdown_field.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
-import 'package:sim/screens/general_widgets/date_picker_formfield.dart';
-import 'package:sim/screens/general_widgets/move_type_field.dart';
 
 class StockForm extends StatelessWidget {
   const StockForm({super.key, required this.stocksController});

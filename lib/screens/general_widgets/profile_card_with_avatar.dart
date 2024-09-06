@@ -11,7 +11,7 @@ class AvatarCard extends StatefulWidget {
 }
 
 class _AvatarCardState extends State<AvatarCard> {
-  @override
+  
   late Offset _mousePosition;
   final AccountController accountController = AccountController();
 

@@ -1,9 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/screens/general_widgets/nav_element.dart';
 import 'package:sim/screens/general_widgets/navbar.dart';
 import 'package:sim/screens/mobile/dashbord/mobile_dashbord.dart';

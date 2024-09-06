@@ -1,12 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
-import 'package:sim/screens/desktop/stocks/widgets/stock_form.dart';
 import 'package:sim/screens/general_widgets/appbar_widget.dart';
 import 'package:sim/screens/general_widgets/info_card.dart';
 import 'package:sim/screens/general_widgets/nav_element.dart';
