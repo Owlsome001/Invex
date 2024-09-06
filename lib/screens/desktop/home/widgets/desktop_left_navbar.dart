@@ -18,12 +18,12 @@ class DesktopLeftNavigationBar extends StatelessWidget {
         children: [
           //Responsive space
           const Expanded(
-            flex: 10,
+            flex: 5,
             child: SizedBox()
           ),
           //Brand with moto
           const Expanded(
-            flex: 15,
+            flex: 20,
             child: SimLogoCard()
             ),
           //Responsive space
@@ -77,12 +77,12 @@ class CustomDesktopLeftNavigation extends StatelessWidget {
         children: [
           //Responsive space
           const Expanded(
-            flex: 10,
+            flex: 5,
             child: SizedBox()
           ),
           //Brand with moto
           const Expanded(
-            flex: 15,
+            flex: 20,
             child: SimLogoCard()
             ),
           //Responsive space

@@ -19,7 +19,7 @@ class FormBouton extends StatelessWidget {
           child: Container(
             height: 45,
             decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
+              color: Theme.of(context).colorScheme.secondary.withGreen(100),
               borderRadius: BorderRadius.circular(10)
             ),
             
@@ -30,7 +30,7 @@ class FormBouton extends StatelessWidget {
                 onPress();
               },
               child: Text(boutonTitle,
-              style: TextStyle(color: Theme.of(context).colorScheme.onBackground),
+              style: TextStyle(color: Theme.of(context).colorScheme.background),
               )),
           ),
         ),

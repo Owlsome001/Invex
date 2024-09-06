@@ -21,4 +21,16 @@ class AccountController {
     }
   }
 
+  String get userDisplayName{
+    return "${user!.firstName} ${user!.lastName}";
+  }
+
+  String get avatarInitials {
+    return "${user!.firstName[0].toUpperCase()}${user!.lastName[0].toUpperCase()}";
+  }
+  
+  String get role {
+    return "${user!.role[0].toUpperCase()}${user!.role.substring(1).toLowerCase()}";
+  }
+
 }

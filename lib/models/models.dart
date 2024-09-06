@@ -38,9 +38,12 @@ class _StockMovement{
   @MapTo("_id")
   late ObjectId id;
   late double quantity;
+  late double quantityAfterMouvement;
+  late String reference;
+  late String justification;
   late _Stock? stock;
   late _User? user;
-  late bool isInMove;
+  late int moveType;
   late int status;
 
 }

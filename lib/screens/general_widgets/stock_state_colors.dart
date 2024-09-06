@@ -38,7 +38,7 @@ class StockStateIndicatorColors extends StatelessWidget {
                   color: Theme.of(context).colorScheme.error,
                 ),
             
-                 const Text("En allerte"),
+                 const Text("En alerte"),
               ],
             ),
           ),

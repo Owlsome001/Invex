@@ -27,7 +27,7 @@ class _SimLoginFormState extends State<SimLoginForm> {
             children:[
               CustomTextFormField(
                 controller: controller.idController,
-                fieldName: "Matricule",
+                fieldName: "Identifiant",
                 fieldHint: "Entrer votre matricule",),
               const SizedBox(height: 10,),
               //Password Field
@@ -65,7 +65,7 @@ class _SimLoginFormState extends State<SimLoginForm> {
                       if(value){
                         return Center(
                           child: LoadingAnimationWidget.horizontalRotatingDots(
-                            color:Theme.of(context).colorScheme.primary,
+                            color:Theme.of(context).colorScheme.secondary,
                             size: Platform.isAndroid?30:50
                             )
                         

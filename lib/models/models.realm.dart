@@ -249,16 +249,22 @@ class StockMovement extends _StockMovement
   StockMovement(
     ObjectId id,
     double quantity,
-    bool isInMove,
+    double quantityAfterMouvement,
+    String reference,
+    String justification,
+    int moveType,
     int status, {
     Stock? stock,
     User? user,
   }) {
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'quantity', quantity);
+    RealmObjectBase.set(this, 'quantityAfterMouvement', quantityAfterMouvement);
+    RealmObjectBase.set(this, 'reference', reference);
+    RealmObjectBase.set(this, 'justification', justification);
     RealmObjectBase.set(this, 'stock', stock);
     RealmObjectBase.set(this, 'user', user);
-    RealmObjectBase.set(this, 'isInMove', isInMove);
+    RealmObjectBase.set(this, 'moveType', moveType);
     RealmObjectBase.set(this, 'status', status);
   }
 
@@ -276,6 +282,26 @@ class StockMovement extends _StockMovement
   set quantity(double value) => RealmObjectBase.set(this, 'quantity', value);
 
   @override
+  double get quantityAfterMouvement =>
+      RealmObjectBase.get<double>(this, 'quantityAfterMouvement') as double;
+  @override
+  set quantityAfterMouvement(double value) =>
+      RealmObjectBase.set(this, 'quantityAfterMouvement', value);
+
+  @override
+  String get reference =>
+      RealmObjectBase.get<String>(this, 'reference') as String;
+  @override
+  set reference(String value) => RealmObjectBase.set(this, 'reference', value);
+
+  @override
+  String get justification =>
+      RealmObjectBase.get<String>(this, 'justification') as String;
+  @override
+  set justification(String value) =>
+      RealmObjectBase.set(this, 'justification', value);
+
+  @override
   Stock? get stock => RealmObjectBase.get<Stock>(this, 'stock') as Stock?;
   @override
   set stock(covariant Stock? value) =>
@@ -287,9 +313,9 @@ class StockMovement extends _StockMovement
   set user(covariant User? value) => RealmObjectBase.set(this, 'user', value);
 
   @override
-  bool get isInMove => RealmObjectBase.get<bool>(this, 'isInMove') as bool;
+  int get moveType => RealmObjectBase.get<int>(this, 'moveType') as int;
   @override
-  set isInMove(bool value) => RealmObjectBase.set(this, 'isInMove', value);
+  set moveType(int value) => RealmObjectBase.set(this, 'moveType', value);
 
   @override
   int get status => RealmObjectBase.get<int>(this, 'status') as int;
@@ -312,9 +338,12 @@ class StockMovement extends _StockMovement
     return <String, dynamic>{
       '_id': id.toEJson(),
       'quantity': quantity.toEJson(),
+      'quantityAfterMouvement': quantityAfterMouvement.toEJson(),
+      'reference': reference.toEJson(),
+      'justification': justification.toEJson(),
       'stock': stock.toEJson(),
       'user': user.toEJson(),
-      'isInMove': isInMove.toEJson(),
+      'moveType': moveType.toEJson(),
       'status': status.toEJson(),
     };
   }
@@ -326,13 +355,19 @@ class StockMovement extends _StockMovement
       {
         '_id': EJsonValue id,
         'quantity': EJsonValue quantity,
-        'isInMove': EJsonValue isInMove,
+        'quantityAfterMouvement': EJsonValue quantityAfterMouvement,
+        'reference': EJsonValue reference,
+        'justification': EJsonValue justification,
+        'moveType': EJsonValue moveType,
         'status': EJsonValue status,
       } =>
         StockMovement(
           fromEJson(id),
           fromEJson(quantity),
-          fromEJson(isInMove),
+          fromEJson(quantityAfterMouvement),
+          fromEJson(reference),
+          fromEJson(justification),
+          fromEJson(moveType),
           fromEJson(status),
           stock: fromEJson(ejson['stock']),
           user: fromEJson(ejson['user']),
@@ -349,11 +384,14 @@ class StockMovement extends _StockMovement
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('quantity', RealmPropertyType.double),
+      SchemaProperty('quantityAfterMouvement', RealmPropertyType.double),
+      SchemaProperty('reference', RealmPropertyType.string),
+      SchemaProperty('justification', RealmPropertyType.string),
       SchemaProperty('stock', RealmPropertyType.object,
           optional: true, linkTarget: 'Stocks'),
       SchemaProperty('user', RealmPropertyType.object,
           optional: true, linkTarget: 'Users'),
-      SchemaProperty('isInMove', RealmPropertyType.bool),
+      SchemaProperty('moveType', RealmPropertyType.int),
       SchemaProperty('status', RealmPropertyType.int),
     ]);
   }();

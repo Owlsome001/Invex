@@ -12,7 +12,7 @@ class LoginContainerOne extends StatelessWidget {
       flex: 4,
       child: Container(
         height: double.infinity,
-        padding: EdgeInsets.all(Platform.isAndroid?80:250),
+        padding: EdgeInsets.all(Platform.isAndroid?80:150),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.2)
         ),

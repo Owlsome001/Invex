@@ -13,6 +13,7 @@ class AvatarCard extends StatefulWidget {
 class _AvatarCardState extends State<AvatarCard> {
   @override
   late Offset _mousePosition;
+  final AccountController accountController = AccountController();
 
    @override
   void initState() {
@@ -37,7 +38,6 @@ class _AvatarCardState extends State<AvatarCard> {
           items: [
             PopupMenuItem(
               onTap: () async {
-                debugPrint("About de logout");
                 await AccountController.logOut(context);
               },
               child: const Row(
@@ -61,26 +61,26 @@ class _AvatarCardState extends State<AvatarCard> {
               backgroundColor: Theme.of(context).colorScheme.secondary,
               radius: !Platform.isAndroid? 19: null,
               child:Text(
-                "EM",
+                accountController.avatarInitials,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.background),
                 ),
             ),
-            !Platform.isAndroid?const Padding(
+            !Platform.isAndroid? Padding(
               padding: EdgeInsets.symmetric(horizontal: 10),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    "Egide Mushoko",
+                    accountController.userDisplayName,
                     style: TextStyle(
                       fontSize: 13,
                       fontWeight: FontWeight.w500,
                     ),
                     ),
                   Text(
-                    "Magasinier",
+                    accountController.role,
                       style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.w100,

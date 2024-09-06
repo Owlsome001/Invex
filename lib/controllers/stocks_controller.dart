@@ -7,7 +7,13 @@ import 'package:sim/screens/mobile/stocks/mobile_stock_view.dart';
 import '../screens/desktop/stocks/desktop_stock_view.dart';
 
 class StocksController {
-  
+
+   ValueNotifier<int> movementType = ValueNotifier(0);
+   TextEditingController quantityController = TextEditingController();
+   TextEditingController articleNameController = TextEditingController();
+   ValueNotifier<DateTime> moveDateNotifier= ValueNotifier(DateTime.now());
+
+
    final List<Map<String, dynamic>> recentMovement = [
     {
       "date":"26.08.2024",

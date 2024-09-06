@@ -22,7 +22,7 @@ class InitAppScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   LoadingAnimationWidget.fourRotatingDots(
-                    color: Theme.of(context).colorScheme.primary, size: Platform.isAndroid?40:80
+                    color: Theme.of(context).colorScheme.secondary, size: Platform.isAndroid?40:80
                     ),
 
                   ValueListenableBuilder(valueListenable: AppController.initAppStep, builder: (context,value, child){

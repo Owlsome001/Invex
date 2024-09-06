@@ -1,17 +1,19 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:sim/controllers/dashboard_controller.dart';
+import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
 import 'package:sim/screens/general_widgets/info_card.dart';
 import 'package:sim/screens/general_widgets/screen_table.dart';
 import 'package:sim/screens/general_widgets/screen_button.dart';
 import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
+import 'package:sim/screens/utils/utils.dart';
 
 class DesktopDashbord extends StatelessWidget {
   DesktopDashbord({super.key});
   final DashbordController _controller = DashbordController();
+  final StocksController _stocksController = StocksController();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,13 +33,13 @@ class DesktopDashbord extends StatelessWidget {
                                             crossAxisAlignment:CrossAxisAlignment.start ,
                                               children: [
                                                 const Text(
-                                                  "15000",
+                                                  "420",
                                                   style: TextStyle(
                                                     fontWeight: FontWeight.bold,
                                                     fontSize: 25,
                                                   ),
                                                 ),
-                                                const Text("Kilogrames"),
+                                                const Text("Stocks"),
 
                                                 Row(
                                                   children: [
@@ -73,8 +75,11 @@ class DesktopDashbord extends StatelessWidget {
                 ScreenButton(
                   buttonText: "Nouveau Mouvement", 
                   iconData: BootstrapIcons.clipboard2_plus, 
-                  onTap: (){
-                    debugPrint("Nouveau mouvement");
+                  onTap: () async {
+                    await showSimFormModal(
+                      context: context,
+                      title: "Nouveau Mouvement", 
+                      form: DesktopMouvementForm(stocksController: _stocksController));
                   })
               ],
             ),

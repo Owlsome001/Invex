@@ -1,9 +1,12 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/screens/desktop/stocks/widgets/stock_form.dart';
+import 'package:sim/screens/desktop/stocks/widgets/stock_sheet_form.dart';
 import 'package:sim/screens/general_widgets/screen_table.dart';
 import 'package:sim/screens/general_widgets/screen_button.dart';
 import 'package:sim/screens/utils/row_action.dart';
+import 'package:sim/screens/utils/utils.dart';
 
 class DesktopStocks extends StatelessWidget {
   DesktopStocks({super.key});
@@ -21,10 +24,10 @@ class DesktopStocks extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
                 ScreenButton(
-                  buttonText: "Nouveau Stock", 
+                  buttonText: "Nouveau article", 
                   iconData: BootstrapIcons.plus_circle, 
-                  onTap: (){
-                    debugPrint("Nouveau Stock");
+                  onTap: () async {
+                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController ,) , title: "Nouveau article");
                   })
               ],
             ),
@@ -36,8 +39,12 @@ class DesktopStocks extends StatelessWidget {
                   RowAction("Details", Icons.info, (){
                     StocksController.navigateToStockView(context);
                   }),
-                  RowAction("Modifier", Icons.edit, (){}),
-                  RowAction("Supprimer", Icons.delete, (){})
+                  RowAction("Modifier", Icons.edit, () async {
+                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController), title: "Modifier l'article");
+                  }),
+                  RowAction("Rapport", Icons.receipt, () async {
+                    await showSimFormModal(context: context, form: StockSheetForm(stocksController: _stocksController), title: "Générer fiche de stock");
+                  })
                 ],
                 tableTitleWiget: SizedBox(
                   height: 30,

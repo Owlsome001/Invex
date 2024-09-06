@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
+import 'package:sim/screens/desktop/stocks/widgets/stock_form.dart';
 import 'package:sim/screens/general_widgets/appbar_widget.dart';
 import 'package:sim/screens/general_widgets/info_card.dart';
 import 'package:sim/screens/general_widgets/nav_element.dart';
@@ -13,6 +15,7 @@ import 'package:sim/screens/general_widgets/screen_table.dart';
 import 'package:sim/screens/general_widgets/stock_info_row.dart';
 import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
+import 'package:sim/screens/utils/utils.dart';
 
 class DesktopStockView extends StatelessWidget {
   DesktopStockView({super.key});
@@ -61,7 +64,7 @@ class DesktopStockView extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Expanded(
+                                  const Expanded(
                                   flex: 3,
                                     child: InfoCard(
                                       content: Column(
@@ -76,7 +79,7 @@ class DesktopStockView extends StatelessWidget {
                                       title: "Informations générales"),
                                   ),
                                   
-                                  Expanded(
+                                  const Expanded(
                                     flex: 3,
                                     child: SizedBox()),
                                   
@@ -87,18 +90,18 @@ class DesktopStockView extends StatelessWidget {
                                         mainAxisAlignment: MainAxisAlignment.start,
                                         crossAxisAlignment:CrossAxisAlignment.start ,
                                           children: [
-                                            Text(
+                                            const Text(
                                               "15000",
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 25,
                                               ),
                                             ),
-                                            Text("Kilogrames"),
+                                            const Text("Kilogrames"),
                                             
                                             StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)),
 
-                                            StockStateIndicatorColors()
+                                            const StockStateIndicatorColors()
                                     
                                           ],
                                       ), 
@@ -114,9 +117,9 @@ class DesktopStockView extends StatelessWidget {
                   ScreenButton(
                     buttonText: "Nouveau Mouvement", 
                     iconData: BootstrapIcons.clipboard2_plus, 
-                    onTap: (){
-                      debugPrint("Nouveau mouvement");
-                    })
+                   onTap: () async {
+                    await showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, withArtile: false,), title: "Nouveau mouvement");
+                  })
                                 ],
                               ),
                               Expanded(
