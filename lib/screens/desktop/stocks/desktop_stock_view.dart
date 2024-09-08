@@ -114,7 +114,7 @@ class DesktopStockView extends StatelessWidget {
                     buttonText: "Nouveau Mouvement", 
                     iconData: BootstrapIcons.clipboard2_plus, 
                    onTap: () async {
-                    await showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, withArtile: false,), title: "Nouveau mouvement");
+                    await showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, withArtile: false,), title: "Nouveau mouvement",onSave:(){});
                   })
                                 ],
                               ),

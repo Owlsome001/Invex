@@ -13,7 +13,7 @@ class CustomDropDown extends StatelessWidget {
       onChanged: (selectedValue)=> onTap(selectedValue),
       items: choices,
       value: defaultChoice,
-      hint: Text("Selectionner un article"),
+      hint: const Text("Selectionner un article"),
     );
   }
 }

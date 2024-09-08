@@ -1,18 +1,38 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/home_controller.dart';
+import 'package:sim/models/models.dart';
 import 'package:sim/screens/mobile/stocks/mobile_stock_view.dart';
+import 'package:sim/services/categorie_service.dart';
+import 'package:sim/services/measurement_unit_service.dart';
 
 import '../screens/desktop/stocks/desktop_stock_view.dart';
 
 class StocksController {
-
+   final CategoryService _categoryService = CategoryService();
+   final MeasurementUnitService _measurementUnitService = MeasurementUnitService();
    ValueNotifier<int> movementType = ValueNotifier(0);
    TextEditingController quantityController = TextEditingController();
    TextEditingController articleNameController = TextEditingController();
+   TextEditingController moveReferenceController = TextEditingController();
+   TextEditingController moveJustificatioController = TextEditingController();
    ValueNotifier<DateTime> moveDateNotifier= ValueNotifier(DateTime.now());
+  
+   List<DropdownMenuItem<int>> categories = [];
+   List<Category> dbCategories = [];
 
+   List<DropdownMenuItem<int>> units = [];
+   List<MeasurementUnit> dbUnits= [];
+
+   StocksController(){
+      dbCategories =_categoryService.allCategories.toList();
+      categories = dbCategories.map((category) => DropdownMenuItem<int>(value: dbCategories.indexOf(category),child: Text(category.title),)).toList();
+
+      dbUnits = _measurementUnitService.allMeasurementUnits.toList();
+      units = dbUnits.map((unit) => DropdownMenuItem<int>(value: dbUnits.indexOf(unit),child: Text(unit.title),)).toList();
+   }
 
    final List<Map<String, dynamic>> recentMovement = [
     {
@@ -151,7 +171,7 @@ class StocksController {
     Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => !Platform.isAndroid? DesktopStockView(): MobileStockView())
+                        builder: (context) => !Platform.isAndroid? DesktopStockView(): const MobileStockView())
                     );
   }
 
@@ -161,5 +181,38 @@ class StocksController {
                     MaterialPageRoute(
                         builder: (context) => HomeController.platformHomeScreen(tabIndex: index))
                     );
+  }
+
+  void saveArticle(){
+    AppController.formError.value = {"hasError":false, "errorText":""};
+    if(validateArticleForm()){
+      debugPrint("About to save the article");
+    }else{
+       debugPrint("Article form is having some problems");
+    }
+   
+  }
+
+  bool validateArticleForm(){
+    String formErrorMessage = "";
+    if(articleNameController.text.isEmpty && quantityController.text.isEmpty){
+      
+      formErrorMessage ="Le champs \"Nom de l'article\" et le \"Niveau d'alerte\" ne doivent pas être vides";
+      AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
+      return false;
+    }else if(articleNameController.text.isEmpty){
+      formErrorMessage ="Le champs \"Nom de l'article\" ne doit pas être vide";
+      AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
+      return false;
+    }else if(quantityController.text.isEmpty){
+       formErrorMessage ="Le champs \"Niveau d'alerte\" ne doit pas être vide";
+       AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
+      return false;
+    }else if(double.parse(quantityController.text)<=0){
+       formErrorMessage ="Le \"Niveau d'alerte\" doit être supéieur à 0";
+       AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
+      return false;
+    }
+    return true;
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:sim/screens/general_widgets/sim_logo_card.dart';
 
 class LoginContainerOne extends StatelessWidget {
@@ -16,9 +17,17 @@ class LoginContainerOne extends StatelessWidget {
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.primary.withOpacity(0.2)
         ),
-        child: const Center(
+        child: Platform.isAndroid? const Center(
           child: SimLogoCard()
-          ),),
+          ):const Column(
+            children: [
+              Expanded(child: SizedBox()),
+              Expanded(
+                flex: 2,
+                child: SimLogoCard()),
+              Expanded(child: SizedBox())
+            ],),
+          ),
     );
   }
 }

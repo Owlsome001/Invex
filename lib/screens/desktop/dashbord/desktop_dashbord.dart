@@ -79,7 +79,9 @@ class DesktopDashbord extends StatelessWidget {
                     await showSimFormModal(
                       context: context,
                       title: "Nouveau Mouvement", 
-                      form: DesktopMouvementForm(stocksController: _stocksController));
+                      form: DesktopMouvementForm(stocksController: _stocksController),
+                      onSave: (){}
+                      );
                   })
               ],
             ),

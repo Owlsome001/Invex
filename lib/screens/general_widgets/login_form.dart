@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/login_controller.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
 import 'package:sim/screens/general_widgets/form_btn.dart';
@@ -78,7 +79,7 @@ class _SimLoginFormState extends State<SimLoginForm> {
                           if(controller.validateForm()){
                             //#2 : Finish
                             LoginController.isSubmiting.value=true;
-                            LoginController.loginFormError.value = {
+                            AppController.formError.value = {
                                     "hasError":false, "errorText":""
                                   };
                             await controller.submitLoginForm();
@@ -90,8 +91,8 @@ class _SimLoginFormState extends State<SimLoginForm> {
 
                   const SizedBox(height: 20,),
                   
-                  ValueListenableBuilder(
-                    valueListenable: LoginController.loginFormError, builder: (context,value, child){
+                  ValueListenableBuilder<Map<String, dynamic>>(
+                    valueListenable: AppController.formError, builder: (context,value, child){
                       if(value["hasError"]){
                         return Center(
                           child: Text(

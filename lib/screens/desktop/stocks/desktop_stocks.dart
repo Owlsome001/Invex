@@ -27,7 +27,7 @@ class DesktopStocks extends StatelessWidget {
                   buttonText: "Nouveau article", 
                   iconData: BootstrapIcons.plus_circle, 
                   onTap: () async {
-                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController ,) , title: "Nouveau article");
+                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController ,) , title: "Nouveau article", onSave:()=>_stocksController.saveArticle());
                   })
               ],
             ),
@@ -40,10 +40,10 @@ class DesktopStocks extends StatelessWidget {
                     StocksController.navigateToStockView(context);
                   }),
                   RowAction("Modifier", Icons.edit, () async {
-                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController), title: "Modifier l'article");
+                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController), title: "Modifier l'article", onSave: (){});
                   }),
                   RowAction("Rapport", Icons.receipt, () async {
-                    await showSimFormModal(context: context, form: StockSheetForm(stocksController: _stocksController), title: "Générer fiche de stock");
+                    await showSimFormModal(context: context, form: StockSheetForm(stocksController: _stocksController), title: "Générer fiche de stock", onSave: (){});
                   })
                 ],
                 tableTitleWiget: SizedBox(

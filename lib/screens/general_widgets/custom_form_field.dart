@@ -1,9 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/src/services/text_formatter.dart';
 
 class CustomTextFormField extends StatelessWidget {
-  const CustomTextFormField({super.key, this.fieldName, required this.fieldHint, this.suffixIcon, this.obscureText, required this.controller, this.padding, this.borderRadius});
+  const CustomTextFormField({super.key, this.fieldName, required this.fieldHint, this.suffixIcon, this.obscureText, required this.controller, this.padding, this.borderRadius, this.keyboardType, this.inputFormatters});
   final String? fieldName;
   final String fieldHint;
   final IconButton? suffixIcon;
@@ -11,6 +12,8 @@ class CustomTextFormField extends StatelessWidget {
   final EdgeInsets? padding;
   final TextEditingController controller;
   final BorderRadiusGeometry? borderRadius;
+  final TextInputType? keyboardType;
+  final List<FilteringTextInputFormatter>? inputFormatters;
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +37,8 @@ class CustomTextFormField extends StatelessWidget {
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.2)
                 ),
                 child: TextFormField(
+                  inputFormatters: inputFormatters,
+                  keyboardType: keyboardType,
                   controller: controller,
                   obscureText: obscureText?? false,
                   decoration: InputDecoration(

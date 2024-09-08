@@ -14,6 +14,7 @@ class _User{
   late String firstName;
   late String lastName; 
   late String surname;
+  late bool isActivated = true;
 
 }
 
@@ -40,7 +41,7 @@ class _StockMovement{
   late double quantity;
   late double quantityAfterMouvement;
   late String reference;
-  late String justification;
+  late String? justification;
   late _Stock? stock;
   late _User? user;
   late int moveType;

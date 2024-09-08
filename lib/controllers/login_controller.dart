@@ -16,9 +16,7 @@ class LoginController {
 
   GlobalKey<FormState> get loginFormKey => _loginFormKey;
 
-  static final ValueNotifier<bool> isSubmiting = ValueNotifier(false);
-
-  static ValueNotifier<Map<String, dynamic>> loginFormError = ValueNotifier({"hasError":false, "errorText":""}); 
+  static final ValueNotifier<bool> isSubmiting = ValueNotifier(false); 
 
   static Widget platformLoginScreen(){
     if(Platform.isAndroid){
@@ -29,14 +27,14 @@ class LoginController {
 
   bool validateForm(){
     if(passwordController.text.isEmpty||idController.text.isEmpty){
-      loginFormError.value = {
+      AppController.formError.value = {
         "hasError":true, "errorText":"Veuillez completer tout les champs."
       };
       debugPrint("Empty");
       return false;
 
     }else{
-      loginFormError.value = {
+     AppController.formError.value = {
         "hasError":false, "errorText":""
       };
     return true;}

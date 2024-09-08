@@ -1,0 +1,36 @@
+import 'package:flutter/foundation.dart';
+import 'package:realm/realm.dart';
+import 'package:sim/controllers/app_controller.dart';
+import 'package:sim/models/models.dart' as models;
+
+class StockRepository {
+  final Realm _realm = AppController.simRealm!;
+
+  RealmResults<models.Stock> findAll(){
+    return _realm.all<models.Stock>();
+  }
+
+  models.Stock? findOne(ObjectId id){
+    return _realm.find<models.Stock>(id);
+  }
+
+  models.Stock updateOne(models.Stock stock, {required String stockName, required models.MeasurementUnit measurementUnit, required models.Category category}){
+    return _realm.write((){
+      //Writing the new status into the database
+     stock.stockName=stockName;
+     stock.measurementUnit=measurementUnit;
+     stock.category = category;
+
+     return stock;
+    });
+  
+  }
+
+  models.StockMovement insertOne(models.StockMovement stockMovement){
+    return _realm.write((){
+      return _realm.add(stockMovement);
+    });
+  
+  }
+ 
+}

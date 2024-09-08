@@ -20,20 +20,22 @@ class UserService {
       // if(e.statusCode)
      switch (e.statusCode) {
        case 997:
-         LoginController.loginFormError.value = {
-              "hasError":true, "errorText":"Problème d'internet"
+         
+         AppController.formError.value = {
+              "hasError":true, "errorText":"Problème d'internet, réessayer plus tard."
          };
+         LoginController.isSubmiting.value=false;
          break;
        case 401:
          Map<String, dynamic> errorMessage = jsonDecode(e.message);
          LoginController.isSubmiting.value=false;
-         LoginController.loginFormError.value = {
+         AppController.formError.value = {
               "hasError":true, "errorText":errorMessage["message"]
          };
          
          break;
        default:
-        LoginController.loginFormError.value = {
+        AppController.formError.value = {
               "hasError":true, "errorText":"Problème d'internet"
         };
         break;

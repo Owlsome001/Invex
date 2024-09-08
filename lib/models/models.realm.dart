@@ -8,6 +8,8 @@ part of 'models.dart';
 
 // ignore_for_file: type=lint
 class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   User(
     ObjectId id,
     String username,
@@ -15,8 +17,14 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
     String role,
     String firstName,
     String lastName,
-    String surname,
-  ) {
+    String surname, {
+    bool isActivated = true,
+  }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<User>({
+        'isActivated': true,
+      });
+    }
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'username', username);
     RealmObjectBase.set(this, 'password', password);
@@ -24,6 +32,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'firstName', firstName);
     RealmObjectBase.set(this, 'lastName', lastName);
     RealmObjectBase.set(this, 'surname', surname);
+    RealmObjectBase.set(this, 'isActivated', isActivated);
   }
 
   User._();
@@ -68,6 +77,13 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
   set surname(String value) => RealmObjectBase.set(this, 'surname', value);
 
   @override
+  bool get isActivated =>
+      RealmObjectBase.get<bool>(this, 'isActivated') as bool;
+  @override
+  set isActivated(bool value) =>
+      RealmObjectBase.set(this, 'isActivated', value);
+
+  @override
   Stream<RealmObjectChanges<User>> get changes =>
       RealmObjectBase.getChanges<User>(this);
 
@@ -87,6 +103,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
       'firstName': firstName.toEJson(),
       'lastName': lastName.toEJson(),
       'surname': surname.toEJson(),
+      'isActivated': isActivated.toEJson(),
     };
   }
 
@@ -111,6 +128,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
           fromEJson(firstName),
           fromEJson(lastName),
           fromEJson(surname),
+          isActivated: fromEJson(ejson['isActivated'], defaultValue: true),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -128,6 +146,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('firstName', RealmPropertyType.string),
       SchemaProperty('lastName', RealmPropertyType.string),
       SchemaProperty('surname', RealmPropertyType.string),
+      SchemaProperty('isActivated', RealmPropertyType.bool),
     ]);
   }();
 
@@ -251,9 +270,9 @@ class StockMovement extends _StockMovement
     double quantity,
     double quantityAfterMouvement,
     String reference,
-    String justification,
     int moveType,
     int status, {
+    String? justification,
     Stock? stock,
     User? user,
   }) {
@@ -295,10 +314,10 @@ class StockMovement extends _StockMovement
   set reference(String value) => RealmObjectBase.set(this, 'reference', value);
 
   @override
-  String get justification =>
-      RealmObjectBase.get<String>(this, 'justification') as String;
+  String? get justification =>
+      RealmObjectBase.get<String>(this, 'justification') as String?;
   @override
-  set justification(String value) =>
+  set justification(String? value) =>
       RealmObjectBase.set(this, 'justification', value);
 
   @override
@@ -357,7 +376,6 @@ class StockMovement extends _StockMovement
         'quantity': EJsonValue quantity,
         'quantityAfterMouvement': EJsonValue quantityAfterMouvement,
         'reference': EJsonValue reference,
-        'justification': EJsonValue justification,
         'moveType': EJsonValue moveType,
         'status': EJsonValue status,
       } =>
@@ -366,9 +384,9 @@ class StockMovement extends _StockMovement
           fromEJson(quantity),
           fromEJson(quantityAfterMouvement),
           fromEJson(reference),
-          fromEJson(justification),
           fromEJson(moveType),
           fromEJson(status),
+          justification: fromEJson(ejson['justification']),
           stock: fromEJson(ejson['stock']),
           user: fromEJson(ejson['user']),
         ),
@@ -386,7 +404,7 @@ class StockMovement extends _StockMovement
       SchemaProperty('quantity', RealmPropertyType.double),
       SchemaProperty('quantityAfterMouvement', RealmPropertyType.double),
       SchemaProperty('reference', RealmPropertyType.string),
-      SchemaProperty('justification', RealmPropertyType.string),
+      SchemaProperty('justification', RealmPropertyType.string, optional: true),
       SchemaProperty('stock', RealmPropertyType.object,
           optional: true, linkTarget: 'Stocks'),
       SchemaProperty('user', RealmPropertyType.object,

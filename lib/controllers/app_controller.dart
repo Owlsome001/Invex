@@ -15,6 +15,7 @@ class AppController {
   static late AppConfiguration _appConfiguration;
   static late App sim;
   static Realm? simRealm;
+   static ValueNotifier<Map<String, dynamic>> formError = ValueNotifier({"hasError":false, "errorText":""});
   static  final List<SchemaObject> simSchemas=[
     models.User.schema, models.Stock.schema, 
     models.StockMovement.schema, 
@@ -39,29 +40,44 @@ class AppController {
         try {
             initAppStep.value ="Ouverture de la base de donnée";
             openDatabase();
-          } on Exception catch (e, trace) {
-            debugPrint("$e\n$trace");
-            return const MessageScreen();
+          } on RealmException catch (e, trace) {
+
+            if(e.message.contains("The following changes cannot be made in additive-only schema mode")) {
+
+              return const MessageScreen(errorMessage: "Votre version de l'application est déjà obsolète.",);
+            }
+
         }
+        
         if(simRealm!=null){
           declareSubscriptions();
           if(afterlogin){
             initAppStep.value ="Synchronisation avec les Serveurs";
             await forceSynchronization();
           }
+          initAppStep.value ="Preparation de vos données";
           AccountController.user = UserService().user;
+          return HomeController.platformHomeScreen();
         }else{
-          return const MessageScreen();
+          return const MessageScreen(errorMessage: "",);
         }
-        return HomeController.platformHomeScreen();
+        
       }
-      return const MessageScreen();
+      return const MessageScreen(errorMessage: "",);
     
     }
   }
 
   static void openDatabase(){
-    Configuration simConfig = Configuration.flexibleSync(sim.currentUser!, simSchemas);
+    Configuration simConfig = Configuration.flexibleSync(
+      sim.currentUser!, simSchemas,
+      syncErrorHandler: (SyncError error){
+        debugPrint("=======> code ${error.code}");
+      },
+       clientResetHandler : RecoverOrDiscardUnsyncedChangesHandler(onManualResetFallback: (resetError){
+          debugPrint("Automatic client reset fails");
+       }),
+      );
     simRealm = Realm(simConfig);
   }
 
