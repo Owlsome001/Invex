@@ -27,6 +27,18 @@ class AppController {
     sim = App(_appConfiguration);
   }
 
+  static FlexibleSyncConfiguration  get simConfig{
+     return  Configuration.flexibleSync(
+      sim.currentUser!, simSchemas,
+      syncErrorHandler: (SyncError error){
+        debugPrint("=======> code ${error.code}");
+      },
+       clientResetHandler : RecoverOrDiscardUnsyncedChangesHandler(onManualResetFallback: (resetError){
+          debugPrint("Automatic client reset fails");
+       }),
+      );
+  }
+
   static ValueNotifier<String> initAppStep = ValueNotifier("Initialisation de l'application");
 
   static Future<Widget> initApp({bool afterlogin=false}) async  {
@@ -41,9 +53,9 @@ class AppController {
             initAppStep.value ="Ouverture de la base de donnée";
             openDatabase();
           } on RealmException catch (e, trace) {
-
             if(e.message.contains("The following changes cannot be made in additive-only schema mode")) {
-
+              Realm.deleteRealm(simConfig.path);
+              await initApp();
               return const MessageScreen(errorMessage: "Votre version de l'application est déjà obsolète.",);
             }
 
@@ -56,7 +68,13 @@ class AppController {
             await forceSynchronization();
           }
           initAppStep.value ="Preparation de vos données";
-          AccountController.user = UserService().user;
+          try {
+            AccountController.user = UserService().user;
+          } on Exception catch (e) {
+            await forceSynchronization();
+            simRealm!.close();
+            await initApp();
+          }
           return HomeController.platformHomeScreen();
         }else{
           return const MessageScreen(errorMessage: "",);

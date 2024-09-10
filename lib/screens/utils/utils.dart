@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:sim/controllers/app_controller.dart';
 
 TextTheme createTextTheme(
     BuildContext context, String bodyFontString, String displayFontString) {
@@ -19,10 +20,12 @@ TextTheme createTextTheme(
 }
 
 Future<dynamic> showSimFormModal({required BuildContext context, required Widget form, required String title, required void Function() onSave}) async {
+  AppController.formError.value = {"hasError":false, "errorText":""};
   return  await showDialog(
                   barrierDismissible: false,
-                  context: context, builder: (context)=>
-                     Center(
+                  context: context, builder: (context) {
+                     ScrollController _scrollController = ScrollController();
+                    return Center(
                       child: FittedBox(
                         fit: BoxFit.contain,
                         child: Container(
@@ -57,7 +60,9 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                 
                             ),
                             Expanded(
-                              child: SingleChildScrollView(child: Center(child: form))),
+                              child: SingleChildScrollView(
+                                controller: _scrollController,
+                                child: Center(child: form))),
                             Container(
                               decoration : BoxDecoration(
                                 color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
@@ -74,6 +79,7 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                         Expanded(
                                           child: TextButton(
                                             onPressed: (){
+                                              AppController.formError.value = {"hasError":false, "errorText":""};
                                               Navigator.of(context, rootNavigator: true).pop();
                                             },
                                             style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary)), 
@@ -92,7 +98,14 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                         
                                         Expanded(
                                           child: TextButton(
-                                            onPressed:()=>onSave(), 
+                                            onPressed:(){
+                                              _scrollController.animateTo(
+                                                 _scrollController.position.minScrollExtent,
+                                                  duration: const Duration(milliseconds: 500),
+                                                  curve: Curves.ease
+                                              );
+                                              onSave()
+                                              ;}, 
                                             style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.secondary)), 
                                             child: Text(
                                               "Enregister",
@@ -109,6 +122,13 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                         ),
                           ),
                       )
-                      )
+                      );
+                  }
                   );
+}
+
+String dateFormater({required DateTime utcDate}){
+  DateTime toLocalDate= utcDate.toLocal();
+
+  return "${toLocalDate.day<10?"0":""}${toLocalDate.day}.${toLocalDate.month<10?"0":""}${toLocalDate.month}.${toLocalDate.year}";
 }

@@ -140,7 +140,8 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
     return const SchemaObject(ObjectType.realmObject, User, 'Users', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('username', RealmPropertyType.string),
+      SchemaProperty('username', RealmPropertyType.string,
+          indexType: RealmIndexType.regular),
       SchemaProperty('password', RealmPropertyType.string),
       SchemaProperty('role', RealmPropertyType.string),
       SchemaProperty('firstName', RealmPropertyType.string),
@@ -155,18 +156,29 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
 }
 
 class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   Stock(
     ObjectId id,
     String stockName,
-    double quantity, {
+    double alerteQuantityLevel,
+    DateTime createdAt, {
     Category? category,
     MeasurementUnit? measurementUnit,
+    double quantity = 0.0,
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<Stock>({
+        'quantity': 0.0,
+      });
+    }
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'stockName', stockName);
     RealmObjectBase.set(this, 'category', category);
+    RealmObjectBase.set(this, 'alerteQuantityLevel', alerteQuantityLevel);
     RealmObjectBase.set(this, 'measurementUnit', measurementUnit);
     RealmObjectBase.set(this, 'quantity', quantity);
+    RealmObjectBase.set(this, 'createdAt', createdAt);
   }
 
   Stock._();
@@ -190,6 +202,13 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'category', value);
 
   @override
+  double get alerteQuantityLevel =>
+      RealmObjectBase.get<double>(this, 'alerteQuantityLevel') as double;
+  @override
+  set alerteQuantityLevel(double value) =>
+      RealmObjectBase.set(this, 'alerteQuantityLevel', value);
+
+  @override
   MeasurementUnit? get measurementUnit =>
       RealmObjectBase.get<MeasurementUnit>(this, 'measurementUnit')
           as MeasurementUnit?;
@@ -202,6 +221,13 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.get<double>(this, 'quantity') as double;
   @override
   set quantity(double value) => RealmObjectBase.set(this, 'quantity', value);
+
+  @override
+  DateTime get createdAt =>
+      RealmObjectBase.get<DateTime>(this, 'createdAt') as DateTime;
+  @override
+  set createdAt(DateTime value) =>
+      RealmObjectBase.set(this, 'createdAt', value);
 
   @override
   Stream<RealmObjectChanges<Stock>> get changes =>
@@ -219,8 +245,10 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       '_id': id.toEJson(),
       'stockName': stockName.toEJson(),
       'category': category.toEJson(),
+      'alerteQuantityLevel': alerteQuantityLevel.toEJson(),
       'measurementUnit': measurementUnit.toEJson(),
       'quantity': quantity.toEJson(),
+      'createdAt': createdAt.toEJson(),
     };
   }
 
@@ -231,14 +259,17 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       {
         '_id': EJsonValue id,
         'stockName': EJsonValue stockName,
-        'quantity': EJsonValue quantity,
+        'alerteQuantityLevel': EJsonValue alerteQuantityLevel,
+        'createdAt': EJsonValue createdAt,
       } =>
         Stock(
           fromEJson(id),
           fromEJson(stockName),
-          fromEJson(quantity),
+          fromEJson(alerteQuantityLevel),
+          fromEJson(createdAt),
           category: fromEJson(ejson['category']),
           measurementUnit: fromEJson(ejson['measurementUnit']),
+          quantity: fromEJson(ejson['quantity'], defaultValue: 0.0),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -250,12 +281,15 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
     return const SchemaObject(ObjectType.realmObject, Stock, 'Stocks', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('stockName', RealmPropertyType.string),
+      SchemaProperty('stockName', RealmPropertyType.string,
+          indexType: RealmIndexType.regular),
       SchemaProperty('category', RealmPropertyType.object,
           optional: true, linkTarget: 'Categories'),
+      SchemaProperty('alerteQuantityLevel', RealmPropertyType.double),
       SchemaProperty('measurementUnit', RealmPropertyType.object,
           optional: true, linkTarget: 'MeasurementUnits'),
       SchemaProperty('quantity', RealmPropertyType.double),
+      SchemaProperty('createdAt', RealmPropertyType.timestamp),
     ]);
   }();
 
@@ -265,20 +299,29 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
 
 class StockMovement extends _StockMovement
     with RealmEntity, RealmObjectBase, RealmObject {
+  static var _defaultsSet = false;
+
   StockMovement(
     ObjectId id,
     double quantity,
-    double quantityAfterMouvement,
+    DateTime recordedAt,
     String reference,
-    int moveType,
-    int status, {
+    int moveType, {
+    double? quantityAfterMouvement,
     String? justification,
     Stock? stock,
     User? user,
+    int status = 0,
   }) {
+    if (!_defaultsSet) {
+      _defaultsSet = RealmObjectBase.setDefaults<StockMovement>({
+        'status': 0,
+      });
+    }
     RealmObjectBase.set(this, '_id', id);
     RealmObjectBase.set(this, 'quantity', quantity);
     RealmObjectBase.set(this, 'quantityAfterMouvement', quantityAfterMouvement);
+    RealmObjectBase.set(this, 'recordedAt', recordedAt);
     RealmObjectBase.set(this, 'reference', reference);
     RealmObjectBase.set(this, 'justification', justification);
     RealmObjectBase.set(this, 'stock', stock);
@@ -301,11 +344,18 @@ class StockMovement extends _StockMovement
   set quantity(double value) => RealmObjectBase.set(this, 'quantity', value);
 
   @override
-  double get quantityAfterMouvement =>
-      RealmObjectBase.get<double>(this, 'quantityAfterMouvement') as double;
+  double? get quantityAfterMouvement =>
+      RealmObjectBase.get<double>(this, 'quantityAfterMouvement') as double?;
   @override
-  set quantityAfterMouvement(double value) =>
+  set quantityAfterMouvement(double? value) =>
       RealmObjectBase.set(this, 'quantityAfterMouvement', value);
+
+  @override
+  DateTime get recordedAt =>
+      RealmObjectBase.get<DateTime>(this, 'recordedAt') as DateTime;
+  @override
+  set recordedAt(DateTime value) =>
+      RealmObjectBase.set(this, 'recordedAt', value);
 
   @override
   String get reference =>
@@ -358,6 +408,7 @@ class StockMovement extends _StockMovement
       '_id': id.toEJson(),
       'quantity': quantity.toEJson(),
       'quantityAfterMouvement': quantityAfterMouvement.toEJson(),
+      'recordedAt': recordedAt.toEJson(),
       'reference': reference.toEJson(),
       'justification': justification.toEJson(),
       'stock': stock.toEJson(),
@@ -374,21 +425,21 @@ class StockMovement extends _StockMovement
       {
         '_id': EJsonValue id,
         'quantity': EJsonValue quantity,
-        'quantityAfterMouvement': EJsonValue quantityAfterMouvement,
+        'recordedAt': EJsonValue recordedAt,
         'reference': EJsonValue reference,
         'moveType': EJsonValue moveType,
-        'status': EJsonValue status,
       } =>
         StockMovement(
           fromEJson(id),
           fromEJson(quantity),
-          fromEJson(quantityAfterMouvement),
+          fromEJson(recordedAt),
           fromEJson(reference),
           fromEJson(moveType),
-          fromEJson(status),
+          quantityAfterMouvement: fromEJson(ejson['quantityAfterMouvement']),
           justification: fromEJson(ejson['justification']),
           stock: fromEJson(ejson['stock']),
           user: fromEJson(ejson['user']),
+          status: fromEJson(ejson['status'], defaultValue: 0),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -402,8 +453,11 @@ class StockMovement extends _StockMovement
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
       SchemaProperty('quantity', RealmPropertyType.double),
-      SchemaProperty('quantityAfterMouvement', RealmPropertyType.double),
-      SchemaProperty('reference', RealmPropertyType.string),
+      SchemaProperty('quantityAfterMouvement', RealmPropertyType.double,
+          optional: true),
+      SchemaProperty('recordedAt', RealmPropertyType.timestamp),
+      SchemaProperty('reference', RealmPropertyType.string,
+          indexType: RealmIndexType.regular),
       SchemaProperty('justification', RealmPropertyType.string, optional: true),
       SchemaProperty('stock', RealmPropertyType.object,
           optional: true, linkTarget: 'Stocks'),
@@ -480,7 +534,8 @@ class Category extends _Category
     return const SchemaObject(ObjectType.realmObject, Category, 'Categories', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('title', RealmPropertyType.string),
+      SchemaProperty('title', RealmPropertyType.string,
+          indexType: RealmIndexType.regular),
     ]);
   }();
 
@@ -553,7 +608,8 @@ class MeasurementUnit extends _MeasurementUnit
         ObjectType.realmObject, MeasurementUnit, 'MeasurementUnits', [
       SchemaProperty('id', RealmPropertyType.objectid,
           mapTo: '_id', primaryKey: true),
-      SchemaProperty('title', RealmPropertyType.string),
+      SchemaProperty('title', RealmPropertyType.string,
+          indexType: RealmIndexType.regular),
     ]);
   }();
 

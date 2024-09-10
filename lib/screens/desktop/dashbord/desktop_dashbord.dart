@@ -11,9 +11,9 @@ import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
 import 'package:sim/screens/utils/utils.dart';
 
 class DesktopDashbord extends StatelessWidget {
-  DesktopDashbord({super.key});
+  DesktopDashbord({super.key, required this.stocksController});
   final DashbordController _controller = DashbordController();
-  final StocksController _stocksController = StocksController();
+  final StocksController stocksController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,35 +28,60 @@ class DesktopDashbord extends StatelessWidget {
                 Expanded(
                   flex: 4,
                   child: InfoCard(
-                                          content: Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment:CrossAxisAlignment.start ,
-                                              children: [
-                                                const Text(
-                                                  "420",
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.bold,
-                                                    fontSize: 25,
-                                                  ),
-                                                ),
-                                                const Text("Stocks"),
-
-                                                Row(
+                                          content: StreamBuilder<Object>(
+                                            stream: stocksController.mouvementStream,
+                                            builder: (context, snapshot) {
+                                              stocksController.refreshStock();
+                                              List<int> stocksAvailablity = stocksController.stocksAvailablity;
+                                              return Column(
+                                                mainAxisAlignment: MainAxisAlignment.start,
+                                                crossAxisAlignment:CrossAxisAlignment.start ,
                                                   children: [
-                                                    Expanded(
-                                                      flex: 2,
-                                                      child: StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8))),
-                                                    Expanded(
-                                                      child: StockStateIndicator(color: Theme.of(context).colorScheme.error)),
-                                                    Expanded(child: StockStateIndicator(color: Theme.of(context).colorScheme.error.withOpacity(0.2))),
-                                                  ],
-                                                ),
+                                                    Text(
+                                                          stocksController.dbStocks.length.toString(),
+                                                          style: TextStyle(
+                                                            color: Theme.of(context).colorScheme.onBackground,
+                                                            fontWeight: FontWeight.bold,
+                                                            fontSize: 25,
+                                                          ),
+                                                      ),
+                                                    const Text("Stocks"),
+                                              
+                                                    Row(
+                                                      children: [
+                                                        //Available stocks
+                                                        stocksAvailablity[0]>0?
+                                                        Expanded(
+                                                          flex: stocksAvailablity[0],
+                                                          child: StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8))):
+                                                          StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)),
+                                                        
+                                                        // Alerte stocks
+                                                        stocksAvailablity[1]>0?
+                                                        Expanded(
+                                                          flex: stocksAvailablity[1],
+                                                          child: StockStateIndicator(color: Theme.of(context).colorScheme.error)):
+                                                          
+                                                          StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)),
+                                                        
+                                                        //Outstocked
+                                                         stocksAvailablity[2]>0?
+                                                        Expanded(
+                                                          flex: stocksAvailablity[2],
+                                                          child: StockStateIndicator(color: Theme.of(context).colorScheme.error.withOpacity(0.2))):
+                                                        StockStateIndicator(color: Theme.of(context).colorScheme.error.withOpacity(0.2))
+                                                        ,
 
-                                                const StockStateIndicatorColors()
-                  
-                                              ],
+                                                      ],
+                                                    ),
+                                              
+                                                    const StockStateIndicatorColors()
+                                                                
+                                                  ],
+                                              );
+                                            }
                                           ), 
-                                          title: "Quantité en stock"),
+                                          title: "Stocks"),
                 ),
 
                      const Expanded(
@@ -79,17 +104,24 @@ class DesktopDashbord extends StatelessWidget {
                     await showSimFormModal(
                       context: context,
                       title: "Nouveau Mouvement", 
-                      form: DesktopMouvementForm(stocksController: _stocksController),
-                      onSave: (){}
+                      form: DesktopMouvementForm(stocksController: stocksController),
+                      onSave: (){
+                        stocksController.saveMouvement(context);
+                      }
                       );
                   })
               ],
             ),
             Expanded(
-              child: ScreenTable(
-                tableRows: _controller.recentMovement, 
-                headers: const ["Date","Désignation","Catégorie", "Quantité", "Type", "Status"], 
-                tableTitleWiget: const Text("Mouvement recents"),),
+              child: StreamBuilder<Object>(
+                stream: stocksController.mouvementStream,
+                builder: (context, snapshot) {
+                  return ScreenTable(
+                    tableRows: stocksController.recentMovements, 
+                    headers: const ["Date","Article","Référence", "Quantité", "Justification", "Status"], 
+                    tableTitleWiget: const Text("Mouvement recents"),);
+                }
+              ),
             )
           
           ],

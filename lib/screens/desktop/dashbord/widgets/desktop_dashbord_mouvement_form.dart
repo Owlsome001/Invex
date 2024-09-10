@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
+import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/general_widgets/custom_dropdown_field.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
@@ -15,6 +15,7 @@ class DesktopMouvementForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    stocksController.refreshStockDropDowItem;
     return Card(
       borderOnForeground: false,
       color: Theme.of(context).colorScheme.background,
@@ -23,8 +24,26 @@ class DesktopMouvementForm extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+            child: ValueListenableBuilder<Map<String, dynamic>>(
+                      valueListenable: AppController.formError, builder: (context,value, child){
+                        if(value["hasError"]){
+                          return Center(
+                            child: Text(
+                              value["errorText"],
+                              style: const TextStyle(
+                                color: Colors.red
+                              ),
+                              ),
+                          
+                          );
+                        }
+                        return const SizedBox();
+                      }),
+          ),
           CustomFormFied(field: MouvementTypeFormField(movementTypeNotifier: stocksController.movementType,), fieldName: 'Type transaction',),
-          withArtile? CustomFormFied(fieldName: "Article", field: CustomDropDown(choices: const [DropdownMenuItem<int>(value: 0,child: Text("Selectionne un article"),)], defaultChoice: 0, onTap: (value){},)):const SizedBox(),
+          withArtile? CustomFormFied(fieldName: "Article", field: CustomDropDown(choices: stocksController.stockDropdowmItems , defaultChoice: 0, onTap: (value){if(value!=null){stocksController.selectedArticle=value;}},)):const SizedBox(),
           CustomFormFied(fieldName: "Référence", field: CustomTextFormField(fieldHint: "ex : Commande MDNA-C", controller: stocksController.moveReferenceController, borderRadius: BorderRadius.zero)),
           CustomFormFied(fieldName: "Quantité", field: CustomTextFormField(fieldHint: "ex : 10.25", controller: stocksController.quantityController, borderRadius: BorderRadius.zero,
           inputFormatters: [

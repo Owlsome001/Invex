@@ -2,6 +2,7 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/desktop/dashbord/desktop_dashbord.dart';
 import 'package:sim/screens/general_widgets/appbar_widget.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
@@ -20,7 +21,7 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
 
   late final TabController _tabController;
   late int tabIndex;
-
+  final StocksController _stocksController = StocksController();
   @override
   void initState() {
     tabIndex= widget.tabIndex;
@@ -74,8 +75,8 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
                   child: TabBarView(
                     controller: _tabController,
                     children: [
-                      DesktopDashbord(),
-                      DesktopStocks(),
+                      DesktopDashbord(stocksController: _stocksController,),
+                      DesktopStocks(stocksController: _stocksController,),
                       const DesktopReportAnalysis()
                     ],),
                 ),

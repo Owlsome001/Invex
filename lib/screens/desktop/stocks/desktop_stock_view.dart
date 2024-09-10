@@ -1,6 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/models/models.dart';
 import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
 import 'package:sim/screens/general_widgets/appbar_widget.dart';
@@ -14,12 +15,14 @@ import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
 import 'package:sim/screens/utils/utils.dart';
 
 class DesktopStockView extends StatelessWidget {
-  DesktopStockView({super.key});
-  
-  final StocksController stocksController = StocksController(); 
+  const DesktopStockView({super.key, required this.selectedIndex, required this.stocksController});
+  final int selectedIndex;
+  final StocksController stocksController;
 
   @override
   Widget build(BuildContext context) {
+    stocksController.selectedArticle=selectedIndex;
+    Stock stock = stocksController.getcurrentStock(selectedIndex);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Row(
@@ -60,19 +63,24 @@ class DesktopStockView extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
-                                  const Expanded(
+                                  Expanded(
                                   flex: 3,
-                                    child: InfoCard(
-                                      content: Column(
-                                        children: [
-                                          StockInfoRow(infoKey: "Nom", infoValue: "Riz"),
-                                          StockInfoRow(infoKey: "Categorie", infoValue: "Nouriture"),
-                                          StockInfoRow(infoKey: "Unité de mesure", infoValue: "Kilograme"),
-                                          StockInfoRow(infoKey: "Date de création", infoValue: "20.07.2019"),
-                                          StockInfoRow(infoKey: "Quantité d'alerte", infoValue: "1000")
-                                        ],
-                                        ), 
-                                      title: "Informations générales"),
+                                    child: StreamBuilder<Object>(
+                                      stream: stock.changes.asBroadcastStream(),
+                                      builder: (context, snapshot) {
+                                        return InfoCard(
+                                          content: Column(
+                                            children: [
+                                              StockInfoRow(infoKey: "Nom", infoValue: stock.stockName),
+                                              StockInfoRow(infoKey: "Categorie", infoValue:stock.category!.title),
+                                              StockInfoRow(infoKey: "Unité de mesure", infoValue: stock.measurementUnit!.title),
+                                              StockInfoRow(infoKey: "Date de création", infoValue: dateFormater(utcDate: stock.createdAt)),
+                                              StockInfoRow(infoKey: "Quantité d'alerte", infoValue: stock.alerteQuantityLevel.toString())
+                                            ],
+                                            ), 
+                                          title: "Informations générales");
+                                      }
+                                    ),
                                   ),
                                   
                                   const Expanded(
@@ -81,27 +89,32 @@ class DesktopStockView extends StatelessWidget {
                                   
                                   Expanded(
                                     flex: 4,
-                                    child: InfoCard(
-                                      content: Column(
-                                        mainAxisAlignment: MainAxisAlignment.start,
-                                        crossAxisAlignment:CrossAxisAlignment.start ,
-                                          children: [
-                                            const Text(
-                                              "15000",
-                                              style: TextStyle(
-                                                fontWeight: FontWeight.bold,
-                                                fontSize: 25,
-                                              ),
-                                            ),
-                                            const Text("Kilogrames"),
-                                            
-                                            StockStateIndicator(color: Theme.of(context).colorScheme.secondary.withOpacity(0.8)),
-
-                                            const StockStateIndicatorColors()
-                                    
-                                          ],
-                                      ), 
-                                      title: "Quantité en stock"),
+                                    child: StreamBuilder<Object>(
+                                      stream: stock.changes,
+                                      builder: (context, snapshot) {
+                                        return InfoCard(
+                                          content: Column(
+                                            mainAxisAlignment: MainAxisAlignment.start,
+                                            crossAxisAlignment:CrossAxisAlignment.start ,
+                                              children: [
+                                                Text(
+                                                  stock.quantity.toString(),
+                                                  style: const TextStyle(
+                                                    fontWeight: FontWeight.bold,
+                                                    fontSize: 25,
+                                                  ),
+                                                ),
+                                                Text("${stock.measurementUnit!.title}${stock.quantity<=1?"":"s"}"),
+                                                
+                                                StockStateIndicator(color: indicatorColor(stock.quantity, stock.alerteQuantityLevel, context)),
+                                        
+                                                const StockStateIndicatorColors()
+                                        
+                                              ],
+                                          ), 
+                                          title: "Quantité en stock");
+                                      }
+                                    ),
                                   ),
                                 ],
                               ),
@@ -114,15 +127,21 @@ class DesktopStockView extends StatelessWidget {
                     buttonText: "Nouveau Mouvement", 
                     iconData: BootstrapIcons.clipboard2_plus, 
                    onTap: () async {
-                    await showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, withArtile: false,), title: "Nouveau mouvement",onSave:(){});
+                    await showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, withArtile: false,), title: "Nouveau mouvement",onSave:(){stocksController.saveMouvement(context);});
                   })
                                 ],
                               ),
                               Expanded(
-                                child: ScreenTable(
-                  tableRows: stocksController.recentMovement, 
-                  headers: const ["Date","Désignation", "Quantité", "Type", "Status"], 
-                  tableTitleWiget: const Text("Mouvement recents"),),
+                                child: StreamBuilder<Object>(
+                                  stream: null,
+                                  builder: (context, snapshot) {
+                                    //TODO: REFRESH THE LIST
+                                    return ScreenTable(
+                                                      tableRows: stocksController.getStockMovement(selectedIndex), 
+                                                      headers: const ["Date","Référence", "Justification", "Quantité", "Status"], 
+                                                      tableTitleWiget: const Text("Mouvement du stock"),);
+                                  }
+                                ),
                               )
                             
                             ],
@@ -136,5 +155,15 @@ class DesktopStockView extends StatelessWidget {
         ],
        ),
     );
+  }
+
+  Color indicatorColor(double currentQuantity, double alerteQuantity, BuildContext context){
+    if(currentQuantity>alerteQuantity){
+      return Theme.of(context).colorScheme.secondary.withOpacity(0.8);
+    }else if(currentQuantity>0 && currentQuantity <= alerteQuantity){
+      return Theme.of(context).colorScheme.error;
+    }else{
+      return Theme.of(context).colorScheme.error.withOpacity(0.2);
+    }
   }
 }

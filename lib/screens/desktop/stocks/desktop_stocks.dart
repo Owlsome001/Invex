@@ -9,8 +9,8 @@ import 'package:sim/screens/utils/row_action.dart';
 import 'package:sim/screens/utils/utils.dart';
 
 class DesktopStocks extends StatelessWidget {
-  DesktopStocks({super.key});
-  final StocksController _stocksController = StocksController();
+  const DesktopStocks({super.key, required this.stocksController});
+  final StocksController stocksController;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,32 +27,42 @@ class DesktopStocks extends StatelessWidget {
                   buttonText: "Nouveau article", 
                   iconData: BootstrapIcons.plus_circle, 
                   onTap: () async {
-                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController ,) , title: "Nouveau article", onSave:()=>_stocksController.saveArticle());
+                    await showSimFormModal(
+                      context: context, form: StockForm(stocksController: stocksController ,) , 
+                      title: "Nouveau article", onSave:()=>stocksController.saveArticle(context));
                   })
               ],
             ),
             Expanded(
-              child: ScreenTable(
-                tableRows: _stocksController.stocks, 
-                headers: const ["Référence","Article","Categorie", "Quantité", "Unité de mesure"], 
-                actions: [
-                  RowAction("Details", Icons.info, (){
-                    StocksController.navigateToStockView(context);
-                  }),
-                  RowAction("Modifier", Icons.edit, () async {
-                    await showSimFormModal(context: context, form: StockForm(stocksController: _stocksController), title: "Modifier l'article", onSave: (){});
-                  }),
-                  RowAction("Rapport", Icons.receipt, () async {
-                    await showSimFormModal(context: context, form: StockSheetForm(stocksController: _stocksController), title: "Générer fiche de stock", onSave: (){});
-                  })
-                ],
-                tableTitleWiget: SizedBox(
-                  height: 30,
-                  child: SearchBar(
-                    elevation:  MaterialStateProperty.all<double>(0.0),
-                    leading: const Icon(Icons.search),
-                  ),
-                )
+              child: StreamBuilder<Object>(
+                stream: stocksController.stocksStream.asBroadcastStream(),
+                builder: (context, snapshot) {
+                  if(snapshot.hasData){
+                    stocksController.refreshStock();
+                  }
+                  return ScreenTable(
+                    tableRows: stocksController.stocks, 
+                    headers: const ["Référence","Article","Categorie", "Quantité", "Unité de mesure"], 
+                    actions: [
+                      RowAction("Details", Icons.info, ({required int selectedIndex}){
+                        StocksController.navigateToStockView(context, selectedIndex, stocksController);
+                      }),
+                      RowAction("Modifier", Icons.edit, ({required int selectedIndex}) async {
+                        await showSimFormModal(context: context, form: StockForm(stocksController: stocksController), title: "Modifier l'article", onSave: (){});
+                      }),
+                      RowAction("Rapport", Icons.receipt, ({required int selectedIndex}) async {
+                        await showSimFormModal(context: context, form: StockSheetForm(stocksController: stocksController), title: "Générer fiche de stock", onSave: (){});
+                      })
+                    ],
+                    tableTitleWiget: SizedBox(
+                      height: 30,
+                      child: SearchBar(
+                        elevation:  MaterialStateProperty.all<double>(0.0),
+                        leading: const Icon(Icons.search),
+                      ),
+                    )
+                  );
+                }
               ),
             )
           

@@ -23,9 +23,21 @@ class StockMouvementRepository {
   
   }
 
-   StockMovement insertOne(StockMovement stockMovement){
+   StockMovement insertOne(StockMovement stockMouvement){
+    //Extracting the movement stock
+    Stock  stock = stockMouvement.stock!;
+    //Extacting the current stock quantity
+    double currentStock = stock.quantity;
+    double quantity = stockMouvement.quantity;
     return _realm.write((){
-      return _realm.add(stockMovement);
+      StockMovement savedMovement = _realm.add(stockMouvement);
+      if(stockMouvement.moveType==MoveType.input.index){
+        //Update stockQuantity as input move are always validated
+        stock.quantity = currentStock+quantity;
+        //Set quantityafterMouvement in the mouvement document
+        savedMovement.quantityAfterMouvement = currentStock+quantity;
+      }
+      return savedMovement;
     });
   
   }

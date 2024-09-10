@@ -26,9 +26,9 @@ class StockRepository {
   
   }
 
-  models.StockMovement insertOne(models.StockMovement stockMovement){
+  models.Stock insertOne(models.Stock stock){
     return _realm.write((){
-      return _realm.add(stockMovement);
+      return _realm.add(stock);
     });
   
   }

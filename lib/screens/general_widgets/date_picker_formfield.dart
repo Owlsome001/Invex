@@ -23,7 +23,7 @@ class DateTimePickerFormField extends StatelessWidget {
             
             ),
           
-            child: Text("0${value.day}.0${value.month}.${value.year}"),
+            child: Text(" ${value.day<10?0:""} ${value.day}.${value.month<10?0:""}${value.month}.${value.year}"),
           ),
         );
       },

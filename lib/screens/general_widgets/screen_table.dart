@@ -1,7 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
+import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/utils/row_action.dart';
 
 class ScreenTable extends StatefulWidget {
@@ -71,64 +71,75 @@ class _ScreenTableState extends State<ScreenTable> {
             child: SingleChildScrollView(
               child: SizedBox(
                 width: double.infinity,
-                child: DataTable(
-                  sortColumnIndex: 0,
-                  // headingRowColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.background),
-                  columns: widget.actions!=null? [
-                    ... List.generate(widget.headers.length, (index) => DataColumn(label: Text(widget.headers[index]))),
-                    DataColumn(label: Text(""))
-                    ]:List.generate(widget.headers.length, (index) => DataColumn(label: Text(widget.headers[index]))), 
-                  rows: List.generate(widget.tableRows.length, (index) => 
-                  DataRow(
-                    // onTap: (){
-                    //   debugPrint("Clicked");
-                    // },
-                    cells: widget.actions!=null? [... List.generate(widget.tableRows[index].values.toList().length, (cellIndex) => 
-                  DataCell(
-                    Text(widget.tableRows[index].values.toList()[cellIndex]),
-                    )),
-                  DataCell(
-                      GestureDetector(
-                        child: const Icon(BootstrapIcons.three_dots_vertical),
-                        onTapDown: (TapDownDetails details) async {
-                          _storePosition(details);
-                          await showMenu(
-                            surfaceTintColor: Theme.of(context).colorScheme.background,
-                            context: context, 
-                            position:  RelativeRect.fromLTRB(_tapPosition.dx,
-                                        _tapPosition.dy,
-                                        MediaQuery.of(context).size.width - _tapPosition.dx,
-                                        MediaQuery.of(context).size.height - _tapPosition.dy// Bigger rect, the entire screen
-                              ), 
-                            items: [
-                              ... List.generate(widget.actions!.length, (index) => 
-                              PopupMenuItem(
-                                 onTap: ()=>widget.actions![index].onTap() ,
-                                child: Row(
-                                crossAxisAlignment : CrossAxisAlignment.center,
-                                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                                    child: Icon(
-                                      widget.actions![index].iconData,
-                                      size: 15,),
-                                  ) , 
-                                  Text(widget.actions![index].commandName)],))
-                              )
-                
-                            ]);
-                        },
-                      )
-                    )
-                    ]:List.generate(widget.tableRows[index].values.toList().length, (cellIndex) => 
-                  DataCell(
-                    Text(widget.tableRows[index].values.toList()[cellIndex]),
-                    )),
+                child: Builder(
+                  builder: (context) {
+                    if(widget.tableRows.isNotEmpty) {
+                      return DataTable(
+                      sortColumnIndex: 0,
+                      // headingRowColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.background),
+                      columns: widget.actions!=null? [
+                        ... List.generate(widget.headers.length, (index) => DataColumn(label: Text(widget.headers[index]))),
+                        const DataColumn(label: Text(""))
+                        ]:List.generate(widget.headers.length, (index) => DataColumn(label: Text(widget.headers[index]))), 
+                      rows: List.generate(widget.tableRows.length, (rowIndex) => 
+                      DataRow(
+                        // onTap: (){
+                        //   debugPrint("Clicked");
+                        // },
+                        cells: widget.actions!=null? [... List.generate(widget.tableRows[rowIndex].values.toList().length, (cellIndex) => 
+                      DataCell(
+                        Text(widget.tableRows[rowIndex].values.toList()[cellIndex]),
+                        )),
+                      DataCell(
+                          GestureDetector(
+                            child: const Icon(BootstrapIcons.three_dots_vertical),
+                            onTapDown: (TapDownDetails details) async {
+                              _storePosition(details);
+                              await showMenu(
+                                surfaceTintColor: Theme.of(context).colorScheme.background,
+                                context: context, 
+                                position:  RelativeRect.fromLTRB(_tapPosition.dx,
+                                            _tapPosition.dy,
+                                            MediaQuery.of(context).size.width - _tapPosition.dx,
+                                            MediaQuery.of(context).size.height - _tapPosition.dy// Bigger rect, the entire screen
+                                  ), 
+                                items: [
+                                  ... List.generate(widget.actions!.length, (index) => 
+                                  PopupMenuItem(
+                                     onTap: ()=>widget.actions![index].onTap(selectedIndex: rowIndex) ,
+                                    child: Row(
+                                    crossAxisAlignment : CrossAxisAlignment.center,
+                                    // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 5),
+                                        child: Icon(
+                                          widget.actions![index].iconData,
+                                          size: 15,),
+                                      ) , 
+                                      Text(widget.actions![index].commandName)],))
+                                  )
                     
-                    )
-                    
-                    ) ),
+                                ]);
+                            },
+                          )
+                        )
+                        ]:List.generate(widget.tableRows[rowIndex].values.toList().length, (cellIndex) => 
+                      DataCell(
+                        Text(widget.tableRows[rowIndex].values.toList()[cellIndex]),
+                        )),
+                        
+                        )
+                        
+                        ) );
+                    }
+
+                    return const Center(child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 30),
+                      child: Text("Aucun élement n'est encore enregister"),
+                    ),);
+                  }
+                ),
               ),
             ),
           ),
