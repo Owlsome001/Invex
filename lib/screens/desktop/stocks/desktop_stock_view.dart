@@ -12,17 +12,18 @@ import 'package:sim/screens/general_widgets/screen_table.dart';
 import 'package:sim/screens/general_widgets/stock_info_row.dart';
 import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
+import 'package:sim/screens/utils/row_action.dart';
 import 'package:sim/screens/utils/utils.dart';
 
 class DesktopStockView extends StatelessWidget {
-  const DesktopStockView({super.key, required this.selectedIndex, required this.stocksController});
-  final int selectedIndex;
+  const DesktopStockView({super.key, required this.stockIndex, required this.stocksController});
+  final int stockIndex;
   final StocksController stocksController;
 
   @override
   Widget build(BuildContext context) {
-    stocksController.selectedArticle=selectedIndex;
-    Stock stock = stocksController.getcurrentStock(selectedIndex);
+    stocksController.selectedArticle=stockIndex;
+    Stock stock = stocksController.getcurrentStock(stockIndex);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Row(
@@ -74,7 +75,7 @@ class DesktopStockView extends StatelessWidget {
                                               StockInfoRow(infoKey: "Nom", infoValue: stock.stockName),
                                               StockInfoRow(infoKey: "Categorie", infoValue:stock.category!.title),
                                               StockInfoRow(infoKey: "Unité de mesure", infoValue: stock.measurementUnit!.title),
-                                              StockInfoRow(infoKey: "Date de création", infoValue: dateFormater(utcDate: stock.createdAt)),
+                                              StockInfoRow(infoKey: "Date de création", infoValue: dateFormater(date: stock.createdAt)),
                                               StockInfoRow(infoKey: "Quantité d'alerte", infoValue: stock.alerteQuantityLevel.toString())
                                             ],
                                             ), 
@@ -137,9 +138,20 @@ class DesktopStockView extends StatelessWidget {
                                   builder: (context, snapshot) {
                                     //TODO: REFRESH THE LIST
                                     return ScreenTable(
-                                                      tableRows: stocksController.getStockMovement(selectedIndex), 
+                                                      tableRows: stocksController.getStockMovementsToMap(stockIndex), 
                                                       headers: const ["Date","Référence", "Justification", "Quantité", "Status"], 
-                                                      tableTitleWiget: const Text("Mouvement du stock"),);
+                                                      tableTitleWiget: const Text("Mouvement du stock"),
+                                                      actions: [
+                                                        RowAction(
+                                                          "Modifier", 
+                                                          Icons.edit, 
+                                                          ({required selectedIndex}) => null,
+                                                          ({required int selectedIndex}){
+                                                            return stocksController.getStockMovements(stockIndex)[selectedIndex].status != MoveStatus.validated.index;
+                                                          }
+                                                          )
+                                                      ],
+                                                      );
                                   }
                                 ),
                               )

@@ -1,4 +1,5 @@
 import 'package:realm/realm.dart';
+import 'package:sim/controllers/account_controller.dart';
 import 'package:sim/models/models.dart';
 import 'package:sim/repositories/stock_movement_repository.dart';
 
@@ -10,10 +11,28 @@ class StockMouvementService {
   }
 
   StockMovement createMouvement(StockMovement stockMovement){
+      stockMovement.user=AccountController.user;
       return _stockMouvementRepository.insertOne(stockMovement);
   }
 
  Stream<RealmResultsChanges<StockMovement>> get movementStream{
   return _stockMouvementRepository.findAll().changes;
  }
+
+  bool approveMouvement(StockMovement stockMovement) {
+    if(stockMovement.quantity>stockMovement.stock!.quantity){
+      return false;
+    }else{
+      return _stockMouvementRepository.approveMouvement(stockMovement);
+    }
+  }
+
+
+  double getStockQuantityBeforeMove(StockMovement stockMovement){
+    if (stockMovement.moveType == MoveType.input.index) {
+     return stockMovement.quantityAfterMouvement!-stockMovement.quantity;
+    } else {
+       return stockMovement.quantityAfterMouvement!+stockMovement.quantity;
+    }
+  }
 }

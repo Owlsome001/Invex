@@ -2,12 +2,16 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/dashboard_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/models/models.dart';
 import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
+import 'package:sim/screens/desktop/dashbord/widgets/movement_info_card.dart';
 import 'package:sim/screens/general_widgets/info_card.dart';
 import 'package:sim/screens/general_widgets/screen_table.dart';
 import 'package:sim/screens/general_widgets/screen_button.dart';
+import 'package:sim/screens/general_widgets/sim_dialog.dart';
 import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
+import 'package:sim/screens/utils/row_action.dart';
 import 'package:sim/screens/utils/utils.dart';
 
 class DesktopDashbord extends StatelessWidget {
@@ -117,9 +121,50 @@ class DesktopDashbord extends StatelessWidget {
                 stream: stocksController.mouvementStream,
                 builder: (context, snapshot) {
                   return ScreenTable(
-                    tableRows: stocksController.recentMovements, 
+                    tableRows: stocksController.recentMovementsToMap, 
                     headers: const ["Date","Article","Référence", "Quantité", "Justification", "Status"], 
-                    tableTitleWiget: const Text("Mouvement recents"),);
+                    tableTitleWiget: const Text("Mouvement recents"),
+                    actions: [
+                               RowAction("Valider", Icons.check, ({required selectedIndex})async {
+                                await showSimDialog(
+                                  context, SimDialog(
+                                    title: "Validation du mouvement", 
+                                    content: MouvementConfirmationCard(stockMovement: stocksController.recentMovements[selectedIndex],), 
+                                    actions: [
+                                      DialogAction(title: "Confirmer", onTap: (){
+                                        if(stocksController.validateMouvement(stocksController.recentMovements[selectedIndex])){
+                                          Navigator.of(context, rootNavigator: true).pop();
+                                        }
+                                      })
+                                    ]
+                                    )
+                                  );
+                               },
+                              ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index
+                              ),
+                               
+                               RowAction("Modifier", Icons.edit, ({required selectedIndex}) {
+                                 return showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController), title: "Modifier mouvement", onSave: (){});
+                               },
+                               ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index
+                               ),
+
+                                RowAction("Supprimer", Icons.delete, ({required int selectedIndex}) async {
+                                  await showDialog(context: context, builder: (builder){
+                                    return const AlertDialog(
+                                      title: Text("Supression mouvement"),
+                                      content: Text("Voulez vous vraiment supprimer cet mouvement"),
+                                      actions: [
+
+                                      ],
+                                    );
+                                  });
+                               
+                               },
+                               ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index
+                               )
+                            ],
+                    );
                 }
               ),
             )

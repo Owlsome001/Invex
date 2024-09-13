@@ -22,9 +22,13 @@ class AppController {
     models.MeasurementUnit.schema, 
     models.Category.schema];
 
-  static Future<void> initAppController()async {
-    _appConfiguration = AppConfiguration(_appId);
-    sim = App(_appConfiguration);
+  static Future<void> initAppController({bool fromAnIsolate=false})async {
+    if (!fromAnIsolate) {
+      _appConfiguration = AppConfiguration(_appId);
+      sim = App(_appConfiguration);
+    }else{
+       sim = App.getById(_appId)!;
+    }
   }
 
   static FlexibleSyncConfiguration  get simConfig{

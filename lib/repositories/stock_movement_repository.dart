@@ -41,5 +41,25 @@ class StockMouvementRepository {
     });
   
   }
+
+  bool approveMouvement(StockMovement stockMovement) {
+    Stock stock = stockMovement.stock!;
+    double currentQuantity = stock.quantity;
+    double quantityAfterMouvement = currentQuantity-stockMovement.quantity;
+    try {
+    _realm.write(() {
+      //Update StockQuantity
+      stock.quantity=quantityAfterMouvement;
+      //Set stock [quantityAfterMouvement] attribute
+      stockMovement.quantityAfterMouvement=quantityAfterMouvement;
+      //Update mouvement status
+      stockMovement.status = MoveStatus.validated.index;
+    });
+    return true;
+  } on Exception {
+    return false;
+  }
+
+  }
   
 }

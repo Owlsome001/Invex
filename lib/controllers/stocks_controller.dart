@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
@@ -11,6 +12,8 @@ import 'package:sim/services/categorie_service.dart';
 import 'package:sim/services/measurement_unit_service.dart';
 import 'package:sim/services/stock_mouvement_service.dart';
 import 'package:sim/services/stock_service.dart';
+import 'package:sim/services/stocksheet_service.dart';
+import 'package:toastification/toastification.dart';
 
 import '../screens/desktop/stocks/desktop_stock_view.dart';
 
@@ -19,6 +22,7 @@ class StocksController {
    final StockService _stockService = StockService();
    final MeasurementUnitService _measurementUnitService = MeasurementUnitService();
    final StockMouvementService _stockMouvementService = StockMouvementService();
+   final StockSheetService _stockSheetService = StockSheetService();
    
    ValueNotifier<int> movementType = ValueNotifier(0);
    TextEditingController quantityController = TextEditingController();
@@ -26,6 +30,7 @@ class StocksController {
    TextEditingController moveReferenceController = TextEditingController();
    TextEditingController moveJustificatioController = TextEditingController();
    ValueNotifier<DateTime> moveDateNotifier= ValueNotifier(DateTime.now());
+   ValueNotifier<DateTime> closingDate = ValueNotifier(DateTime.now());
   
    List<DropdownMenuItem<int>> categories = [];
    List<Category> dbCategories = [];
@@ -41,6 +46,8 @@ class StocksController {
    int _selectedMeasurementUnitIndex=0;
 
    int _selectedArticle=0;
+
+   int _selectedStockSheetType =0;
 
   Stream<RealmResultsChanges<Stock>> get stocksStream{
     return _stockService.stocksStream;
@@ -63,10 +70,13 @@ class StocksController {
    
    }
 
+  List<StockMovement> get recentMovements{
+    return _stockMouvementService.allMouvements.toList();
+  }
 
-   List<Map<String, dynamic>> get recentMovements{
-    return _stockMouvementService.allMouvements.map((mouvement) => {
-      "date":dateFormater(utcDate: mouvement.recordedAt),
+   List<Map<String, dynamic>> get recentMovementsToMap{
+    return recentMovements.map((mouvement) => {
+      "date":dateFormater(date: mouvement.recordedAt),
       "article":mouvement.stock!.stockName,
       "reference":mouvement.reference,
       "quantity":"${mouvement.moveType==0?"+":"-"} ${mouvement.quantity.toString()}", 
@@ -91,8 +101,12 @@ class StocksController {
   }
 
   set selectedArticle (int index){
-    debugPrint("===SelectedActicle index : $index");
     _selectedArticle =index;
+  }
+
+  
+  set selectedStockSheetType (int index){
+    _selectedStockSheetType =index;
   }
 
 
@@ -105,7 +119,7 @@ class StocksController {
     Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (context) => !Platform.isAndroid? DesktopStockView(selectedIndex: selectedIndex,stocksController: controller,): const MobileStockView())
+                        builder: (context) => !Platform.isAndroid? DesktopStockView(stockIndex: selectedIndex,stocksController: controller,): const MobileStockView())
                     );
   }
 
@@ -190,15 +204,18 @@ class StocksController {
 
   }
 
+  List<StockMovement> getStockMovements(int stockIndex){
+     Stock stock = dbStocks[stockIndex];
+       return _stockMouvementService.allMouvements
+      .where((mouvement) => mouvement.stock!.id==stock.id).toList();
+  }
+  
+  List<Map<String, dynamic>> getStockMovementsToMap(int stockIndex){
 
-  List<Map<String, dynamic>> getStockMovement(int stockIndex){
-    Stock stock = dbStocks[stockIndex];
-
-    return _stockMouvementService.allMouvements
-    .where((mouvement) => mouvement.stock!.id==stock.id)
+    return getStockMovements(stockIndex)
     .map((mouvement) => 
     {
-      "Date":dateFormater(utcDate: mouvement.recordedAt),
+      "Date":dateFormater(date: mouvement.recordedAt),
       "Référence":mouvement.reference, 
       "Justification":mouvement.justification??"-", 
       "Quantité": "${mouvement.moveType==0?"+":"-"} ${mouvement.quantity.toString()}", 
@@ -358,5 +375,54 @@ class StocksController {
 
   Stock getcurrentStock(index){
     return dbStocks[index];
+  }
+
+  bool validateMouvement(StockMovement stockMovement){
+    AppController.formError.value={"hasError":false, "errorText":""};
+    bool result = _stockMouvementService.approveMouvement(stockMovement);
+    if(result==false){
+       AppController.formError.value={"hasError":true, "errorText":"Impossible de confirmer cette sortie car la quantité en stock est inférieur à celle demandée"};
+      return false;
+    }
+    return true;
+  }
+
+  Future<bool> submitStockSheetGenerationForm() async{
+    if(validateStockSheetGenerationForm()){
+      String path = await StockSheetService.getSimStockSheetDirectory(type: StockSheetType.values[_selectedStockSheetType]);
+      ReceivePort receivePort = await _stockSheetService.generateStockSheet(startingDate : moveDateNotifier.value, endingDate: closingDate.value, stock : dbStocks[_selectedArticle], sheetformat: StockSheetType.excel, path :path);
+      receivePort.listen((message) { 
+        if(message=="Done"){
+          toastification.show(
+            title: const Text("Génération terminée"),
+            description: Text("L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est terminée. Le fichier se trouve dans Mes documents, dans le dossier mes document"),
+            style: ToastificationStyle.flatColored,
+            type: ToastificationType.success,
+            showIcon: true,
+            alignment: Alignment.bottomRight,
+            autoCloseDuration: const Duration(seconds: 4)
+            
+          );
+        }
+      });
+      return true;
+    }else{
+      debugPrint("SheetGeneration Validation fails");
+      return false;
+    }
+  }
+
+  bool validateStockSheetGenerationForm() {
+    AppController.formError.value={"hasError":false, "errorText":""};
+    if(moveDateNotifier.value.isAfter(closingDate.value)){
+      AppController.formError.value={"hasError":true, "errorText":"La date de cloture ne dois pas être après la date de fermeture"};
+      return false;
+    }else if(getStockMovements(_selectedArticle)
+    .where((stockMove) => stockMove.recordedAt.isBefore(closingDate.value)&&stockMove.recordedAt.isAfter(moveDateNotifier.value)&& stockMove.status==MoveStatus.validated.index ).isEmpty){
+       AppController.formError.value={"hasError":true, "errorText":"Il n'a pas de mouvements enregistrés et validés pour le stock \"${dbStocks[_selectedArticle].stockName}\" entre le ${dateFormater(date: moveDateNotifier.value, isUTC: false)} et le ${dateFormater(date: closingDate.value, isUTC: false)} "};
+      return false;
+    }else{
+      return true;
+    }
   }
 }

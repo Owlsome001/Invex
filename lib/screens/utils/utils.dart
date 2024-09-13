@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sim/controllers/app_controller.dart';
+import 'package:sim/screens/general_widgets/sim_dialog.dart';
 
 TextTheme createTextTheme(
     BuildContext context, String bodyFontString, String displayFontString) {
@@ -127,8 +128,16 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                   );
 }
 
-String dateFormater({required DateTime utcDate}){
-  DateTime toLocalDate= utcDate.toLocal();
+String dateFormater({required DateTime date, bool isUTC=true}){
+  DateTime toLocalDate= isUTC?date.toLocal():date;
 
   return "${toLocalDate.day<10?"0":""}${toLocalDate.day}.${toLocalDate.month<10?"0":""}${toLocalDate.month}.${toLocalDate.year}";
+}
+
+
+Future<void> showSimDialog(BuildContext context,SimDialog dialog) async{
+  return await showDialog(context: context, builder: (context){
+    return dialog;
+  });
+  
 }

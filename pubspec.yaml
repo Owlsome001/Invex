@@ -25,6 +25,10 @@ dependencies:
 
   window_manager: ^0.2.7
   responsive_framework: ^1.5.1
+  pdf: ^3.11.1
+  syncfusion_flutter_xlsio: ^26.2.14
+  path_provider: ^2.1.4
+  toastification: ^2.2.0
 
 dev_dependencies:
   flutter_test:

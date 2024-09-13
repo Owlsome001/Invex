@@ -5,11 +5,14 @@ import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/screens/general_widgets/spash_screen.dart';
 import 'package:sim/screens/utils/utils.dart';
 import 'package:sim/theme.dart';
+import 'package:toastification/toastification.dart';
 import 'package:window_manager/window_manager.dart';
 
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
-  await windowManager.ensureInitialized();
+  if(Platform.isWindows){
+      await windowManager.ensureInitialized();
+  }
   await AppController.initAppController();
 
   if(Platform.isWindows) {
@@ -33,13 +36,15 @@ class Sim extends StatelessWidget {
     TextTheme textTheme = createTextTheme(context, "Roboto", "Inter");
     MaterialTheme theme = MaterialTheme(textTheme);
      
-
-    return MaterialApp(
-      title: 'SIM',
-      debugShowCheckedModeBanner: false,
-      // theme: brightness == Brightness.light ? theme.light() : theme.dark(),
-      theme:  theme.light(),
-      home: const SplashScreen(),
+    
+    return ToastificationWrapper(
+      child: MaterialApp(
+        title: 'SIM',
+        debugShowCheckedModeBanner: false,
+        // theme: brightness == Brightness.light ? theme.light() : theme.dark(),
+        theme:  theme.light(),
+        home: const SplashScreen(),
+      ),
     );
   }
 }

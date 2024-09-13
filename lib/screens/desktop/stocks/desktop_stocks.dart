@@ -46,13 +46,30 @@ class DesktopStocks extends StatelessWidget {
                     actions: [
                       RowAction("Details", Icons.info, ({required int selectedIndex}){
                         StocksController.navigateToStockView(context, selectedIndex, stocksController);
-                      }),
+                      },
+                      ({required int selectedIndex})=>true
+                      ),
                       RowAction("Modifier", Icons.edit, ({required int selectedIndex}) async {
                         await showSimFormModal(context: context, form: StockForm(stocksController: stocksController), title: "Modifier l'article", onSave: (){});
-                      }),
-                      RowAction("Rapport", Icons.receipt, ({required int selectedIndex}) async {
-                        await showSimFormModal(context: context, form: StockSheetForm(stocksController: stocksController), title: "Générer fiche de stock", onSave: (){});
-                      })
+                      },
+                      ({required int selectedIndex})=>true
+                      ),
+                      RowAction("Fiche de stock", Icons.receipt, ({required int selectedIndex}) async {
+                        await showSimFormModal(
+                          context: context, 
+                          form: StockSheetForm(stocksController: stocksController), 
+                          title: "Générer fiche de stock", 
+                          onSave: () async{
+                            stocksController.selectedArticle = selectedIndex;
+                            bool result = await stocksController.submitStockSheetGenerationForm();
+                            if(result){
+                              // ignore: use_build_context_synchronously
+                              Navigator.of(context, rootNavigator: true).pop();
+                            }
+                          });
+                      },
+                      ({required int selectedIndex})=>true
+                      )
                     ],
                     tableTitleWiget: SizedBox(
                       height: 30,

@@ -16,5 +16,9 @@ class StockService {
 
   Stock createStock(Stock stock){
     return _stockRepository.insertOne(stock);
+  }
+
+  Stock? findById(ObjectId objectId) {
+    return _stockRepository.findOne(objectId);
   } 
 }

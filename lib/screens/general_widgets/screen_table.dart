@@ -91,7 +91,7 @@ class _ScreenTableState extends State<ScreenTable> {
                         Text(widget.tableRows[rowIndex].values.toList()[cellIndex]),
                         )),
                       DataCell(
-                          GestureDetector(
+                          widget.actions!.where((action) => action.toDisplay(selectedIndex:rowIndex)==true).isNotEmpty?GestureDetector(
                             child: const Icon(BootstrapIcons.three_dots_vertical),
                             onTapDown: (TapDownDetails details) async {
                               _storePosition(details);
@@ -104,9 +104,11 @@ class _ScreenTableState extends State<ScreenTable> {
                                             MediaQuery.of(context).size.height - _tapPosition.dy// Bigger rect, the entire screen
                                   ), 
                                 items: [
-                                  ... List.generate(widget.actions!.length, (index) => 
+                                  ... widget.actions!
+                                  .where((action) => action.toDisplay(selectedIndex: rowIndex)==true)
+                                  .map((action) => 
                                   PopupMenuItem(
-                                     onTap: ()=>widget.actions![index].onTap(selectedIndex: rowIndex) ,
+                                     onTap: ()=>action.onTap(selectedIndex: rowIndex) ,
                                     child: Row(
                                     crossAxisAlignment : CrossAxisAlignment.center,
                                     // mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -114,15 +116,15 @@ class _ScreenTableState extends State<ScreenTable> {
                                       Padding(
                                         padding: const EdgeInsets.symmetric(horizontal: 5),
                                         child: Icon(
-                                          widget.actions![index].iconData,
+                                          action.iconData,
                                           size: 15,),
                                       ) , 
-                                      Text(widget.actions![index].commandName)],))
+                                      Text(action.commandName)],))
                                   )
                     
                                 ]);
                             },
-                          )
+                          ): const Text("")
                         )
                         ]:List.generate(widget.tableRows[rowIndex].values.toList().length, (cellIndex) => 
                       DataCell(
