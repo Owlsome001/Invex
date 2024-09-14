@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:isolate';
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
@@ -21,35 +22,21 @@ class StockSheetService {
    static StockService stockService = StockService();
   
   static Future<String> getSimStockSheetDirectory({StockSheetType type = StockSheetType.pdf}) async {
-    String pdfStockSheetPath = "/fiches de stocks/pdf/";
-    String excelStockSheetPath = "/fiches de stocks/excel/";
+    String excelStockSheetPath = "/Fiches de stocks/";
     
     Directory rootpath = await getApplicationDocumentsDirectory();
     
 
-    
-    Directory pdfDirectory = Directory("${rootpath!.path}/$pdfStockSheetPath");
 
     Directory excelDirectory = Directory("${rootpath.path}/$excelStockSheetPath");
 
-    switch (type) {
-      case StockSheetType.pdf:
-        if(await pdfDirectory.exists()){
-          return pdfDirectory.path;
-        }else{
-         await pdfDirectory.create(recursive: true);
-         return pdfDirectory.path;
-        }
-      case StockSheetType.excel:
-        if(await excelDirectory.exists()){
-          return excelDirectory.path;
-        }else{
-         await excelDirectory.create(recursive: true);
-         return excelDirectory.path;
-        }
-      default:
-        return pdfDirectory.path;
-    }
+  
+      if(await excelDirectory.exists()){
+        return excelDirectory.path;
+      }else{
+       await excelDirectory.create(recursive: true);
+       return excelDirectory.path;
+      }
   }
 
   pw.Row writeStockSheetRow({required String date, required String reference, required String quantity, required MoveType type, String? justification }){
@@ -121,16 +108,18 @@ class StockSheetService {
   // }
 
   Future<void> generateExcelStockSheet({required Stock stock, required DateTime startingDate, required DateTime endDate, required String path}) async {
-    
-
     List<StockMovement> mouvements = stock.getBacklinks<StockMovement>("stock")
-    .where((move) => move.recordedAt.isAfter(startingDate)&& move.recordedAt.isBefore(endDate) && move.status == MoveStatus.validated.index).toList();
+    .where((move) => move.recordedAt.isAfter(startingDate)&& move.recordedAt.isBefore(endDate.add( const Duration(days: 1))) && move.status == MoveStatus.validated.index).toList();
     
-    double totalIn = mouvements.where((move) => move.moveType == MoveType.input.index)
-    .map((mouve) => mouve.quantity).reduce((value, element) => value+element);
+    List<double> listInQuantities = mouvements.where((move) => move.moveType == MoveType.input.index)
+    .map((mouve) => mouve.quantity).toList();
 
-    double totalOut = mouvements.where((move) => move.moveType == MoveType.output.index)
-    .map((mouve) => mouve.quantity).reduce((value, element) => value+element);
+    double totalIn = listInQuantities.isNotEmpty?listInQuantities.reduce((value, element) => value+element):0.0;
+
+    List<double> listOutQuantities = mouvements.where((move) => move.moveType == MoveType.output.index)
+    .map((mouve) => mouve.quantity).toList();
+
+    double totalOut = listOutQuantities.isNotEmpty?listInQuantities.reduce((value, element) => value+element):0.0;
 
     double initialQuantityValue = stockMouvementService.getStockQuantityBeforeMove(mouvements.first);
     
@@ -361,18 +350,29 @@ class StockSheetService {
       DateTime endingDate = getDateTimeFomFormattedString(args[3]);
       StockSheetType sheetType = StockSheetType.values[args[4]];
       
-      switch (sheetType) {
-        case StockSheetType.pdf:
-          await stockSheetService.generatePdfStockSheet(stock: stock, startingDate: startingDate, endDate: endingDate, path: args[5]);
-          break;
-        case StockSheetType.excel:
-          await stockSheetService.generateExcelStockSheet(stock: stock, startingDate: startingDate, endDate: endingDate, path: args[5]);
-          break;
-        default:
-      }
+    switch (sheetType) {
+      case StockSheetType.pdf:
+        await stockSheetService.generatePdfStockSheet(stock: stock, startingDate: startingDate, endDate: endingDate, path: args[5]);
+        break;
+      case StockSheetType.excel:
+        try{
+
+        await stockSheetService.generateExcelStockSheet(stock: stock, startingDate: startingDate, endDate: endingDate, path: args[5]);
+        sendPort.send("Done");
+        } on Exception catch(e) {
+          if(e is PathAccessException){
+            sendPort.send("Access to file is denied");
+          }else{
+            sendPort.send("Error occured");
+          }
+        }
+        break;
+      default:
+    }
+
 
       
-      Isolate.exit(sendPort, "Done");
+      Isolate.exit(sendPort, "Terminated");
     
   }
 

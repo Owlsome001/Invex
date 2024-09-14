@@ -22,7 +22,9 @@ void main() async{
     await WindowManager.instance.isClosable();
   }
 
-  runApp(const Sim());
+  runApp(
+    const Sim()
+    );
 }
 
 class Sim extends StatelessWidget {

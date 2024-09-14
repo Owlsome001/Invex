@@ -11,8 +11,12 @@ class StockMouvementService {
   }
 
   StockMovement createMouvement(StockMovement stockMovement){
-      stockMovement.user=AccountController.user;
+      stockMovement.createdBy=AccountController.user;
       return _stockMouvementRepository.insertOne(stockMovement);
+  }
+
+  StockMovement updateMouvement(StockMovement stockMovement, {required String reference, required double quantity, String? justification, required int moveType}){
+      return _stockMouvementRepository.updateOne(stockMovement, newReference: reference, newQuantity: quantity, newType: moveType, newJustification: justification);
   }
 
  Stream<RealmResultsChanges<StockMovement>> get movementStream{

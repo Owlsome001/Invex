@@ -37,7 +37,11 @@ class AppController {
       syncErrorHandler: (SyncError error){
         debugPrint("=======> code ${error.code}");
       },
-       clientResetHandler : RecoverOrDiscardUnsyncedChangesHandler(onManualResetFallback: (resetError){
+       clientResetHandler : RecoverOrDiscardUnsyncedChangesHandler(
+        onBeforeReset: (beforeResetRealm){
+          debugPrint("Attempting automatic client reset");
+        },
+        onManualResetFallback: (resetError){
           debugPrint("Automatic client reset fails");
        }),
       );
@@ -57,56 +61,61 @@ class AppController {
             initAppStep.value ="Ouverture de la base de donnée";
             openDatabase();
           } on RealmException catch (e, trace) {
+            debugPrint("$e \n $trace");
             if(e.message.contains("The following changes cannot be made in additive-only schema mode")) {
-              Realm.deleteRealm(simConfig.path);
-              await initApp();
-              return const MessageScreen(errorMessage: "Votre version de l'application est déjà obsolète.",);
+           
+                // Realm.deleteRealm(simConfig.path);
+                // return initApp();
+           
+                return const MessageScreen(errorMessage: "Cete version est obsolète, installer la nouvelle version pour continuer à utiliser l'application",); 
+              
             }
+           
+
 
         }
         
-        if(simRealm!=null){
+        if(simRealm!=null && !simRealm!.isClosed){
           declareSubscriptions();
           if(afterlogin){
-            initAppStep.value ="Synchronisation avec les Serveurs";
             await forceSynchronization();
           }
-          initAppStep.value ="Preparation de vos données";
+          
           try {
+            initAppStep.value ="Preparation de vos données";
             AccountController.user = UserService().user;
+            initAppStep.value ="Finalisation";
+            
+                return HomeController.platformHomeScreen();
+             
           } on Exception catch (e) {
-            await forceSynchronization();
-            simRealm!.close();
-            await initApp();
+            debugPrint("===> $e");
+             return const MessageScreen(errorMessage: "Données nécéssaires au fonctionnement sont indisponible",);
           }
-          return HomeController.platformHomeScreen();
+          
         }else{
-          return const MessageScreen(errorMessage: "",);
+             return const MessageScreen(errorMessage: "Error de base de donnée",);
         }
         
+      }else{
+         return const MessageScreen(errorMessage: "La version web n'est pas encore disponible",);
       }
-      return const MessageScreen(errorMessage: "",);
+     
     
     }
   }
 
   static void openDatabase(){
-    Configuration simConfig = Configuration.flexibleSync(
-      sim.currentUser!, simSchemas,
-      syncErrorHandler: (SyncError error){
-        debugPrint("=======> code ${error.code}");
-      },
-       clientResetHandler : RecoverOrDiscardUnsyncedChangesHandler(onManualResetFallback: (resetError){
-          debugPrint("Automatic client reset fails");
-       }),
-      );
     simRealm = Realm(simConfig);
   }
 
   static Future<void> forceSynchronization() async {
     if(simRealm!=null){
+      initAppStep.value ="Synchronisation avec les Serveurs";
      await simRealm!.syncSession.waitForDownload();
      await simRealm!.syncSession.waitForUpload();
+    }else{
+      debugPrint("Realm is null");
     }
   }
 

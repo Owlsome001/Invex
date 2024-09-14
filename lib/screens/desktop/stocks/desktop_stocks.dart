@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:sim/controllers/account_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/desktop/stocks/widgets/stock_form.dart';
 import 'package:sim/screens/desktop/stocks/widgets/stock_sheet_form.dart';
@@ -50,7 +51,9 @@ class DesktopStocks extends StatelessWidget {
                       ({required int selectedIndex})=>true
                       ),
                       RowAction("Modifier", Icons.edit, ({required int selectedIndex}) async {
-                        await showSimFormModal(context: context, form: StockForm(stocksController: stocksController), title: "Modifier l'article", onSave: (){});
+                        await showSimFormModal(context: context, form: StockForm(stocksController: stocksController, stock: stocksController.dbStocks[selectedIndex],), title: "Modifier l'article", onSave: (){
+                          stocksController.saveArticle(context, stock: stocksController.dbStocks[selectedIndex]);
+                        });
                       },
                       ({required int selectedIndex})=>true
                       ),
@@ -68,7 +71,7 @@ class DesktopStocks extends StatelessWidget {
                             }
                           });
                       },
-                      ({required int selectedIndex})=>true
+                      ({required int selectedIndex})=>AccountController.isChefDepot
                       )
                     ],
                     tableTitleWiget: SizedBox(

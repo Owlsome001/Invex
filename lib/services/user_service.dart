@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/login_controller.dart';
@@ -45,10 +46,20 @@ class UserService {
   } 
 
   static Future<void> logOut() async {
-     return await AppController.sim.currentUser!.logOut();
+    AppController.sim.deleteUser(AppController.sim.currentUser!);
+    await AppController.sim.currentUser!.logOut();
   }
 
+  bool get isMagasinier{
+    return user.role==models.UserRole.magasinier.name.toUpperCase();
+  }
+
+  bool get isChefDepot{
+    return user.role==models.UserRole.chefDepot.name.toUpperCase();
+  }
+
+
   models.User get user{
-    return _userRepository.user;
+  return  _userRepository.user;
   } 
 }

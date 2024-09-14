@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:flutter/material.dart';
 import 'package:realm/realm.dart';
+import 'package:sim/controllers/account_controller.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/models/models.dart';
@@ -71,7 +72,7 @@ class StocksController {
    }
 
   List<StockMovement> get recentMovements{
-    return _stockMouvementService.allMouvements.toList();
+    return _stockMouvementService.allMouvements.reversed.toList();
   }
 
    List<Map<String, dynamic>> get recentMovementsToMap{
@@ -131,11 +132,11 @@ class StocksController {
                     );
   }
 
-  void saveArticle(BuildContext context){
+  void saveArticle(BuildContext context, {Stock? stock}){
     AppController.formError.value = {"hasError":false, "errorText":""};
     if(validateArticleForm()){
-      debugPrint("About to save the article");
       try {
+        if(stock==null){
         _stockService.createStock(
           Stock(ObjectId(), 
           articleNameController.text.trim(), 
@@ -144,8 +145,15 @@ class StocksController {
           category: dbCategories[_selectedCategoryIndex],
           measurementUnit: dbUnits[_selectedMeasurementUnitIndex] 
           ),
-          
-          );
+        
+          );}else{
+            _stockService.updateStock(stock, 
+            category: dbCategories[_selectedCategoryIndex], 
+            measurementUnit: dbUnits[_selectedMeasurementUnitIndex], 
+            name: articleNameController.text.trim(),
+            alertQuantity:AccountController.isChefDepot?double.parse(quantityController.text.trim()):null 
+            );
+          }
         AppController.formError.value = {"hasError":false, "errorText":""};
         refreshStock();
         Navigator.of(context, rootNavigator: true).pop();
@@ -170,11 +178,11 @@ class StocksController {
       formErrorMessage ="Le champs \"Nom de l'article\" ne doit pas être vide";
       AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
       return false;
-    }else if(quantityController.text.isEmpty){
+    }else if(AccountController.isChefDepot&& quantityController.text.isEmpty){
        formErrorMessage ="Le champs \"Niveau d'alerte\" ne doit pas être vide";
        AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
       return false;
-    }else if(double.parse(quantityController.text)<=0){
+    }else if(AccountController.isChefDepot && double.parse(quantityController.text)<=0){
        formErrorMessage ="Le \"Niveau d'alerte\" doit être supéieur à 0";
        AppController.formError.value= {"hasError":true, "errorText":formErrorMessage};
       return false;
@@ -223,12 +231,13 @@ class StocksController {
     }).toList();
   }
 
-   void saveMouvement(BuildContext context){
+   void saveMouvement(BuildContext context, {StockMovement? stockMovement}){
     AppController.formError.value = {"hasError":false, "errorText":""};
     if(validateMouvementForm()){
       try {
-        _stockMouvementService.createMouvement(
-          StockMovement(
+        
+        if (stockMovement==null) {
+           _stockMouvementService.createMouvement( StockMovement(
             ObjectId(), 
             double.parse(quantityController.text.trim()),
             moveDateNotifier.value.toUtc(),
@@ -238,6 +247,15 @@ class StocksController {
             status: movementType.value == MoveType.input.index?1:0,
             justification: movementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
             ));
+        } else {
+           _stockMouvementService.updateMouvement(
+            stockMovement, reference: 
+            moveReferenceController.text, 
+            quantity: double.parse(quantityController.text.trim()), 
+            moveType: movementType.value,
+            justification: movementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
+            );
+        }
 
         AppController.formError.value = {"hasError":false, "errorText":""};
         refreshStock();
@@ -388,10 +406,16 @@ class StocksController {
   }
 
   Future<bool> submitStockSheetGenerationForm() async{
+    DateTime openingDate = DateTime(moveDateNotifier.value.year,moveDateNotifier.value.month, moveDateNotifier.value.day);
+    DateTime closingDateValue = DateTime(closingDate.value.year,closingDate.value.month, closingDate.value.day);
+    moveDateNotifier.value=openingDate;
+    closingDate.value=closingDateValue;
     if(validateStockSheetGenerationForm()){
       String path = await StockSheetService.getSimStockSheetDirectory(type: StockSheetType.values[_selectedStockSheetType]);
+      
       ReceivePort receivePort = await _stockSheetService.generateStockSheet(startingDate : moveDateNotifier.value, endingDate: closingDate.value, stock : dbStocks[_selectedArticle], sheetformat: StockSheetType.excel, path :path);
       receivePort.listen((message) { 
+        debugPrint("$message");
         if(message=="Done"){
           toastification.show(
             title: const Text("Génération terminée"),
@@ -403,7 +427,17 @@ class StocksController {
             autoCloseDuration: const Duration(seconds: 4)
             
           );
-        }
+        }else if(message=="Access to file is denied"){
+              toastification.show(
+            title: const Text("Génération interrompue"),
+            description: Text("L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est interompu. Le ficher sur lequel l'application écrit est ouvert par un autre application. Veuillez fermer tout les fenêtres excel puis réessayer"),
+            style: ToastificationStyle.flatColored,
+            type: ToastificationType.error,
+            showIcon: true,
+            alignment: Alignment.bottomRight,
+            autoCloseDuration: const Duration(seconds: 4)  
+          );
+          }
       });
       return true;
     }else{
@@ -418,7 +452,16 @@ class StocksController {
       AppController.formError.value={"hasError":true, "errorText":"La date de cloture ne dois pas être après la date de fermeture"};
       return false;
     }else if(getStockMovements(_selectedArticle)
-    .where((stockMove) => stockMove.recordedAt.isBefore(closingDate.value)&&stockMove.recordedAt.isAfter(moveDateNotifier.value)&& stockMove.status==MoveStatus.validated.index ).isEmpty){
+    .where((stockMove) {
+      bool isBefore = stockMove.recordedAt.isAfter(moveDateNotifier.value);
+      bool isAfter =  stockMove.recordedAt.isBefore(closingDate.value.add(const Duration(days: 1)));
+      bool isActivated =stockMove.status==MoveStatus.validated.index;
+      debugPrint("$isBefore");
+      return isBefore &&
+    isActivated
+    && isAfter;
+    } ).isEmpty
+    ){
        AppController.formError.value={"hasError":true, "errorText":"Il n'a pas de mouvements enregistrés et validés pour le stock \"${dbStocks[_selectedArticle].stockName}\" entre le ${dateFormater(date: moveDateNotifier.value, isUTC: false)} et le ${dateFormater(date: closingDate.value, isUTC: false)} "};
       return false;
     }else{

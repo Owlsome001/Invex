@@ -14,10 +14,21 @@ class StockMouvementRepository {
     return _realm.find<StockMovement>(id);
   }
 
-  StockMovement updateOne(StockMovement stockMovement, int newStatus){
+  StockMovement updateOne(StockMovement stockMovement, {required int newType, required double newQuantity, required String newReference, String? newJustification}){
+    MoveType currentType = MoveType.values[stockMovement.moveType];
+    Stock stock = stockMovement.stock!;
+    double stockQuantity = stock.quantity;
     return _realm.write((){
       //Writing the new status into the database
-      stockMovement.status = newStatus;
+      stockMovement.quantity=newQuantity;
+      stockMovement.reference=newReference;
+      stockMovement.justification=newJustification;
+      stockMovement.moveType = newType;
+      if(currentType!=MoveType.values[newType] && MoveType.values[newType]==MoveType.input){
+        stock.quantity+=newQuantity;
+        stockMovement.quantityAfterMouvement=newQuantity+stockQuantity;
+        stockMovement.status = MoveStatus.validated.index;
+      }
       return stockMovement;
     });
   

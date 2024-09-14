@@ -1,5 +1,6 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:sim/controllers/account_controller.dart';
 import 'package:sim/controllers/dashboard_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/models/models.dart';
@@ -13,6 +14,7 @@ import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
 import 'package:sim/screens/utils/row_action.dart';
 import 'package:sim/screens/utils/utils.dart';
+import 'package:sim/services/user_service.dart';
 
 class DesktopDashbord extends StatelessWidget {
   DesktopDashbord({super.key, required this.stocksController});
@@ -140,11 +142,13 @@ class DesktopDashbord extends StatelessWidget {
                                     )
                                   );
                                },
-                              ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index
+                              ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index && AccountController.isChefDepot
                               ),
                                
                                RowAction("Modifier", Icons.edit, ({required selectedIndex}) {
-                                 return showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController), title: "Modifier mouvement", onSave: (){});
+                                 return showSimFormModal(context: context, form: DesktopMouvementForm(stocksController: stocksController, stockMovement: stocksController.recentMovements[selectedIndex],), title: "Modifier mouvement", onSave: (){
+                                  stocksController.saveMouvement(context, stockMovement: stocksController.recentMovements[selectedIndex]);
+                                 });
                                },
                                ({required int selectedIndex})=>stocksController.recentMovements[selectedIndex].status != MoveStatus.validated.index
                                ),

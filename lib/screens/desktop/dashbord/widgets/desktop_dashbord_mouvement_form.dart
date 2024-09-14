@@ -2,20 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
+import 'package:sim/models/models.dart';
 import 'package:sim/screens/general_widgets/custom_dropdown_field.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
 import 'package:sim/screens/general_widgets/date_picker_formfield.dart';
 import 'package:sim/screens/general_widgets/move_type_field.dart';
 
 class DesktopMouvementForm extends StatelessWidget {
-  const DesktopMouvementForm({super.key, required this.stocksController, this.withArtile=true});
+  const DesktopMouvementForm({super.key, required this.stocksController, this.withArtile=true, this.stockMovement});
   final StocksController stocksController;
   final bool withArtile;
+  final StockMovement? stockMovement;
   
 
   @override
   Widget build(BuildContext context) {
     stocksController.refreshStockDropDowItem;
+    if(stockMovement!=null){
+      stocksController.selectedArticle = stocksController.dbStocks.indexOf(stocksController.dbStocks.where((stock) => stock.id==stockMovement!.stock!.id).first);
+      stocksController.movementType.value = MoveType.values[stockMovement!.moveType].index;
+      stocksController.moveJustificatioController.text = stockMovement!.justification??"";
+      stocksController.moveReferenceController.text = stockMovement!.reference;
+      stocksController.quantityController.text = stockMovement!.quantity.toString();
+    }
     return Card(
       borderOnForeground: false,
       color: Theme.of(context).colorScheme.background,
@@ -43,7 +52,7 @@ class DesktopMouvementForm extends StatelessWidget {
                       }),
           ),
           CustomFormFied(field: MouvementTypeFormField(movementTypeNotifier: stocksController.movementType,), fieldName: 'Type transaction',),
-          withArtile? CustomFormFied(fieldName: "Article", field: CustomDropDown(choices: stocksController.stockDropdowmItems , defaultChoice: 0, onTap: (value){if(value!=null){stocksController.selectedArticle=value;}},)):const SizedBox(),
+          withArtile && stockMovement==null? CustomFormFied(fieldName: "Article", field: CustomDropDown(choices: stocksController.stockDropdowmItems , defaultChoice: 0, onTap: (value){if(value!=null){stocksController.selectedArticle=value;}},)):const SizedBox(),
           CustomFormFied(fieldName: "Référence", field: CustomTextFormField(fieldHint: "ex : Commande MDNA-C", controller: stocksController.moveReferenceController, borderRadius: BorderRadius.zero)),
           CustomFormFied(fieldName: "Quantité", field: CustomTextFormField(fieldHint: "ex : 10.25", controller: stocksController.quantityController, borderRadius: BorderRadius.zero,
           inputFormatters: [
@@ -57,7 +66,7 @@ class DesktopMouvementForm extends StatelessWidget {
             }
             return const SizedBox();
             }),
-          CustomFormFied(fieldName: "Date", field: DateTimePickerFormField(valueNotifier: stocksController.moveDateNotifier))
+          stockMovement==null? CustomFormFied(fieldName: "Date", field: DateTimePickerFormField(valueNotifier: stocksController.moveDateNotifier)): const SizedBox()
 
         ],
       ),

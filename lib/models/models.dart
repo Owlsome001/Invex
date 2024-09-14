@@ -10,6 +10,10 @@ enum MoveStatus{
   pending, validated, rejected
 }
 
+enum UserRole {
+  magasinier, chefDepot
+}
+
 @RealmModel()
 @MapTo("Users")
 class _User{
@@ -37,10 +41,13 @@ class _Stock{
   @Indexed()
   late String stockName;
   late _Category? category;
-  late double alerteQuantityLevel;
+  late double alerteQuantityLevel=1.0;
   late _MeasurementUnit? measurementUnit;
   late double quantity = 0.0;
-  late DateTime createdAt; 
+  late DateTime createdAt;
+  late _User? createdBy;
+  late DateTime? updatedAt;
+  late _User? updatedBy; 
 }
 
 
@@ -57,9 +64,11 @@ class _StockMovement{
   late String reference;
   late String? justification;
   late _Stock? stock;
-  late _User? user;
+  late _User? createdBy;
   late int moveType;
   late int status=0;
+  late _User? validatedBy;
+  late DateTime? validatedAt;
 
 }
 

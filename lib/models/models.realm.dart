@@ -161,14 +161,18 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
   Stock(
     ObjectId id,
     String stockName,
-    double alerteQuantityLevel,
     DateTime createdAt, {
     Category? category,
+    double alerteQuantityLevel = 1.0,
     MeasurementUnit? measurementUnit,
     double quantity = 0.0,
+    User? createdBy,
+    DateTime? updatedAt,
+    User? updatedBy,
   }) {
     if (!_defaultsSet) {
       _defaultsSet = RealmObjectBase.setDefaults<Stock>({
+        'alerteQuantityLevel': 1.0,
         'quantity': 0.0,
       });
     }
@@ -179,6 +183,9 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'measurementUnit', measurementUnit);
     RealmObjectBase.set(this, 'quantity', quantity);
     RealmObjectBase.set(this, 'createdAt', createdAt);
+    RealmObjectBase.set(this, 'createdBy', createdBy);
+    RealmObjectBase.set(this, 'updatedAt', updatedAt);
+    RealmObjectBase.set(this, 'updatedBy', updatedBy);
   }
 
   Stock._();
@@ -230,6 +237,25 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'createdAt', value);
 
   @override
+  User? get createdBy => RealmObjectBase.get<User>(this, 'createdBy') as User?;
+  @override
+  set createdBy(covariant User? value) =>
+      RealmObjectBase.set(this, 'createdBy', value);
+
+  @override
+  DateTime? get updatedAt =>
+      RealmObjectBase.get<DateTime>(this, 'updatedAt') as DateTime?;
+  @override
+  set updatedAt(DateTime? value) =>
+      RealmObjectBase.set(this, 'updatedAt', value);
+
+  @override
+  User? get updatedBy => RealmObjectBase.get<User>(this, 'updatedBy') as User?;
+  @override
+  set updatedBy(covariant User? value) =>
+      RealmObjectBase.set(this, 'updatedBy', value);
+
+  @override
   Stream<RealmObjectChanges<Stock>> get changes =>
       RealmObjectBase.getChanges<Stock>(this);
 
@@ -249,6 +275,9 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       'measurementUnit': measurementUnit.toEJson(),
       'quantity': quantity.toEJson(),
       'createdAt': createdAt.toEJson(),
+      'createdBy': createdBy.toEJson(),
+      'updatedAt': updatedAt.toEJson(),
+      'updatedBy': updatedBy.toEJson(),
     };
   }
 
@@ -259,17 +288,20 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
       {
         '_id': EJsonValue id,
         'stockName': EJsonValue stockName,
-        'alerteQuantityLevel': EJsonValue alerteQuantityLevel,
         'createdAt': EJsonValue createdAt,
       } =>
         Stock(
           fromEJson(id),
           fromEJson(stockName),
-          fromEJson(alerteQuantityLevel),
           fromEJson(createdAt),
           category: fromEJson(ejson['category']),
+          alerteQuantityLevel:
+              fromEJson(ejson['alerteQuantityLevel'], defaultValue: 1.0),
           measurementUnit: fromEJson(ejson['measurementUnit']),
           quantity: fromEJson(ejson['quantity'], defaultValue: 0.0),
+          createdBy: fromEJson(ejson['createdBy']),
+          updatedAt: fromEJson(ejson['updatedAt']),
+          updatedBy: fromEJson(ejson['updatedBy']),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -290,6 +322,11 @@ class Stock extends _Stock with RealmEntity, RealmObjectBase, RealmObject {
           optional: true, linkTarget: 'MeasurementUnits'),
       SchemaProperty('quantity', RealmPropertyType.double),
       SchemaProperty('createdAt', RealmPropertyType.timestamp),
+      SchemaProperty('createdBy', RealmPropertyType.object,
+          optional: true, linkTarget: 'Users'),
+      SchemaProperty('updatedAt', RealmPropertyType.timestamp, optional: true),
+      SchemaProperty('updatedBy', RealmPropertyType.object,
+          optional: true, linkTarget: 'Users'),
     ]);
   }();
 
@@ -310,8 +347,10 @@ class StockMovement extends _StockMovement
     double? quantityAfterMouvement,
     String? justification,
     Stock? stock,
-    User? user,
+    User? createdBy,
     int status = 0,
+    User? validatedBy,
+    DateTime? validatedAt,
   }) {
     if (!_defaultsSet) {
       _defaultsSet = RealmObjectBase.setDefaults<StockMovement>({
@@ -325,9 +364,11 @@ class StockMovement extends _StockMovement
     RealmObjectBase.set(this, 'reference', reference);
     RealmObjectBase.set(this, 'justification', justification);
     RealmObjectBase.set(this, 'stock', stock);
-    RealmObjectBase.set(this, 'user', user);
+    RealmObjectBase.set(this, 'createdBy', createdBy);
     RealmObjectBase.set(this, 'moveType', moveType);
     RealmObjectBase.set(this, 'status', status);
+    RealmObjectBase.set(this, 'validatedBy', validatedBy);
+    RealmObjectBase.set(this, 'validatedAt', validatedAt);
   }
 
   StockMovement._();
@@ -377,9 +418,10 @@ class StockMovement extends _StockMovement
       RealmObjectBase.set(this, 'stock', value);
 
   @override
-  User? get user => RealmObjectBase.get<User>(this, 'user') as User?;
+  User? get createdBy => RealmObjectBase.get<User>(this, 'createdBy') as User?;
   @override
-  set user(covariant User? value) => RealmObjectBase.set(this, 'user', value);
+  set createdBy(covariant User? value) =>
+      RealmObjectBase.set(this, 'createdBy', value);
 
   @override
   int get moveType => RealmObjectBase.get<int>(this, 'moveType') as int;
@@ -390,6 +432,20 @@ class StockMovement extends _StockMovement
   int get status => RealmObjectBase.get<int>(this, 'status') as int;
   @override
   set status(int value) => RealmObjectBase.set(this, 'status', value);
+
+  @override
+  User? get validatedBy =>
+      RealmObjectBase.get<User>(this, 'validatedBy') as User?;
+  @override
+  set validatedBy(covariant User? value) =>
+      RealmObjectBase.set(this, 'validatedBy', value);
+
+  @override
+  DateTime? get validatedAt =>
+      RealmObjectBase.get<DateTime>(this, 'validatedAt') as DateTime?;
+  @override
+  set validatedAt(DateTime? value) =>
+      RealmObjectBase.set(this, 'validatedAt', value);
 
   @override
   Stream<RealmObjectChanges<StockMovement>> get changes =>
@@ -412,9 +468,11 @@ class StockMovement extends _StockMovement
       'reference': reference.toEJson(),
       'justification': justification.toEJson(),
       'stock': stock.toEJson(),
-      'user': user.toEJson(),
+      'createdBy': createdBy.toEJson(),
       'moveType': moveType.toEJson(),
       'status': status.toEJson(),
+      'validatedBy': validatedBy.toEJson(),
+      'validatedAt': validatedAt.toEJson(),
     };
   }
 
@@ -438,8 +496,10 @@ class StockMovement extends _StockMovement
           quantityAfterMouvement: fromEJson(ejson['quantityAfterMouvement']),
           justification: fromEJson(ejson['justification']),
           stock: fromEJson(ejson['stock']),
-          user: fromEJson(ejson['user']),
+          createdBy: fromEJson(ejson['createdBy']),
           status: fromEJson(ejson['status'], defaultValue: 0),
+          validatedBy: fromEJson(ejson['validatedBy']),
+          validatedAt: fromEJson(ejson['validatedAt']),
         ),
       _ => raiseInvalidEJson(ejson),
     };
@@ -461,10 +521,14 @@ class StockMovement extends _StockMovement
       SchemaProperty('justification', RealmPropertyType.string, optional: true),
       SchemaProperty('stock', RealmPropertyType.object,
           optional: true, linkTarget: 'Stocks'),
-      SchemaProperty('user', RealmPropertyType.object,
+      SchemaProperty('createdBy', RealmPropertyType.object,
           optional: true, linkTarget: 'Users'),
       SchemaProperty('moveType', RealmPropertyType.int),
       SchemaProperty('status', RealmPropertyType.int),
+      SchemaProperty('validatedBy', RealmPropertyType.object,
+          optional: true, linkTarget: 'Users'),
+      SchemaProperty('validatedAt', RealmPropertyType.timestamp,
+          optional: true),
     ]);
   }();
 

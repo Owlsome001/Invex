@@ -14,13 +14,13 @@ class StockRepository {
     return _realm.find<models.Stock>(id);
   }
 
-  models.Stock updateOne(models.Stock stock, {required String stockName, required models.MeasurementUnit measurementUnit, required models.Category category}){
+  models.Stock updateOne(models.Stock stock, {required String stockName, required models.MeasurementUnit measurementUnit, required models.Category category, double? alertQuantity}){
     return _realm.write((){
       //Writing the new status into the database
      stock.stockName=stockName;
      stock.measurementUnit=measurementUnit;
      stock.category = category;
-
+     stock.alerteQuantityLevel=alertQuantity??1;
      return stock;
     });
   
