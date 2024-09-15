@@ -24,6 +24,6 @@ class StockService {
   }
 
   models.Stock updateStock(models.Stock stock,{required models.Category category, double? alertQuantity, required models.MeasurementUnit measurementUnit, required String name}) {
-    return _stockRepository.updateOne(stock, stockName: name, measurementUnit: measurementUnit, category: category);
+    return _stockRepository.updateOne(stock, stockName: name, measurementUnit: measurementUnit, category: category, alertQuantity: alertQuantity);
   } 
 }

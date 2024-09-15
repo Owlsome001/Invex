@@ -43,9 +43,9 @@ class DesktopStockView extends StatelessWidget {
                 NavElement(title: "Stocks", const Icon(BootstrapIcons.box_fill), isSelected: true, onTap: (){
                   // StocksController.navigateHomeScreens(context, 1);
                 }),
-                NavElement(title: "Rapports & Analyses",const Icon(BootstrapIcons.bar_chart_line_fill), onTap: (){
-                  StocksController.navigateHomeScreens(context, 2);
-                })
+                // NavElement(title: "Rapports & Analyses",const Icon(BootstrapIcons.bar_chart_line_fill), onTap: (){
+                //   StocksController.navigateHomeScreens(context, 2);
+                // })
               ],),
             )),
           Expanded(
@@ -134,7 +134,7 @@ class DesktopStockView extends StatelessWidget {
                               ),
                               Expanded(
                                 child: StreamBuilder<Object>(
-                                  stream: null,
+                                  stream: stocksController.getStockMouvementStream(stock),
                                   builder: (context, snapshot) {
                                     //TODO: REFRESH THE LIST
                                     return ScreenTable(

@@ -14,7 +14,6 @@ import 'package:sim/screens/general_widgets/stock_state_colors.dart';
 import 'package:sim/screens/general_widgets/stock_state_indicator.dart';
 import 'package:sim/screens/utils/row_action.dart';
 import 'package:sim/screens/utils/utils.dart';
-import 'package:sim/services/user_service.dart';
 
 class DesktopDashbord extends StatelessWidget {
   DesktopDashbord({super.key, required this.stocksController});

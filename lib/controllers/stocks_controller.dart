@@ -57,6 +57,10 @@ class StocksController {
   Stream<RealmResultsChanges> get mouvementStream{
     return _stockMouvementService.movementStream;
   }
+  
+   Stream<RealmResultsChanges<StockMovement>> getStockMouvementStream(Stock stock){
+      return _stockMouvementService.getStockMouvementStream(stock);
+  }
 
    StocksController(){
       dbCategories =_categoryService.allCategories.toList();
@@ -140,8 +144,8 @@ class StocksController {
         _stockService.createStock(
           Stock(ObjectId(), 
           articleNameController.text.trim(), 
-          double.parse(quantityController.text.trim()),
           DateTime.now().toUtc(),
+          alerteQuantityLevel: AccountController.isMagasinier?double.parse(quantityController.text.trim()):1.0,
           category: dbCategories[_selectedCategoryIndex],
           measurementUnit: dbUnits[_selectedMeasurementUnitIndex] 
           ),
@@ -215,7 +219,7 @@ class StocksController {
   List<StockMovement> getStockMovements(int stockIndex){
      Stock stock = dbStocks[stockIndex];
        return _stockMouvementService.allMouvements
-      .where((mouvement) => mouvement.stock!.id==stock.id).toList();
+      .where((mouvement) => mouvement.stock!.id==stock.id).toList().reversed.toList();
   }
   
   List<Map<String, dynamic>> getStockMovementsToMap(int stockIndex){

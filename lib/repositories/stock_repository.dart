@@ -15,12 +15,13 @@ class StockRepository {
   }
 
   models.Stock updateOne(models.Stock stock, {required String stockName, required models.MeasurementUnit measurementUnit, required models.Category category, double? alertQuantity}){
+    double stockAlerteQuantityLevel = stock.alerteQuantityLevel;
     return _realm.write((){
       //Writing the new status into the database
      stock.stockName=stockName;
      stock.measurementUnit=measurementUnit;
      stock.category = category;
-     stock.alerteQuantityLevel=alertQuantity??1;
+     stock.alerteQuantityLevel=alertQuantity??stockAlerteQuantityLevel;
      return stock;
     });
   

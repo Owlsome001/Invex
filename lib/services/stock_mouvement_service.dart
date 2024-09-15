@@ -39,4 +39,8 @@ class StockMouvementService {
        return stockMovement.quantityAfterMouvement!+stockMovement.quantity;
     }
   }
+
+  Stream<RealmResultsChanges<StockMovement>> getStockMouvementStream(Stock stock) {
+    return stock.getBacklinks<StockMovement>("stock").changes;
+  }
 }

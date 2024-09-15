@@ -73,5 +73,6 @@ msix_config:
   identity_name: stressless.management.sim
   msix_version: 1.0.0.0
   logo_path: assets\images\logo.png
-  # capabilities: internetClient, location, microphone, webcam
-  capabilities: internetClient
+  capabilities: internetClient, location, microphone, webcam
+  certificate_path: C:\Users\owlsome\Documents\Github\Cert\Sim.pfx
+  certificate_password: France04050727?
