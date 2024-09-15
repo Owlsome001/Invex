@@ -1,5 +1,8 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
+import 'package:sim/controllers/app_controller.dart';
+import 'package:sim/controllers/dashboard_controller.dart';
+import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/models/models.dart';
 import 'package:sim/screens/desktop/dashbord/widgets/desktop_dashbord_mouvement_form.dart';
@@ -22,8 +25,10 @@ class DesktopStockView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+   
     stocksController.selectedArticle=stockIndex;
     Stock stock = stocksController.getcurrentStock(stockIndex);
+     HomeController.desktopAppBarTitle.value =stock.stockName;
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: Row(
@@ -41,7 +46,7 @@ class DesktopStockView extends StatelessWidget {
                   StocksController.navigateHomeScreens(context, 0);
                 }),
                 NavElement(title: "Stocks", const Icon(BootstrapIcons.box_fill), isSelected: true, onTap: (){
-                  // StocksController.navigateHomeScreens(context, 1);
+                  StocksController.navigateHomeScreens(context, 1);
                 }),
                 // NavElement(title: "Rapports & Analyses",const Icon(BootstrapIcons.bar_chart_line_fill), onTap: (){
                 //   StocksController.navigateHomeScreens(context, 2);
@@ -52,7 +57,7 @@ class DesktopStockView extends StatelessWidget {
             flex: 8,
             child: Column(
               children: [
-                const CustomAppBar(),
+                const CustomAppBar(displayAction: true,),
                 Expanded(
                   child: Padding(
                           padding: const EdgeInsets.all(20),

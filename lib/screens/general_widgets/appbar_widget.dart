@@ -3,7 +3,8 @@ import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/screens/general_widgets/profile_card_with_avatar.dart';
 
 class CustomAppBar extends StatelessWidget {
-  const CustomAppBar({super.key});
+  const CustomAppBar({super.key, this.displayAction=false});
+  final bool displayAction;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -15,9 +16,15 @@ class CustomAppBar extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          ValueListenableBuilder(
-            valueListenable: HomeController.desktopAppBarTitle,
-            builder: (context, value, widget)=>Text(value),
+          
+          Row(
+            children: [
+              displayAction?const BackButton(): const SizedBox(),
+              ValueListenableBuilder(
+                valueListenable: HomeController.desktopAppBarTitle,
+                builder: (context, value, widget)=>Text(value),
+              ),
+            ],
           ),
           const AvatarCard()
         ],
