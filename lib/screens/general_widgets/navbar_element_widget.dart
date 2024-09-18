@@ -85,7 +85,6 @@ class _CustomNavBarElementWigdetState extends State<CustomNavBarElementWigdet> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (){
-        debugPrint("On Tap ");
         widget.onTap();
         },
       child: MouseRegion(

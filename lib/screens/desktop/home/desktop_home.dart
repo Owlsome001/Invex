@@ -2,11 +2,11 @@ import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/desktop/dashbord/desktop_dashbord.dart';
 import 'package:sim/screens/general_widgets/appbar_widget.dart';
 import 'package:sim/screens/desktop/home/widgets/desktop_left_navbar.dart';
-import 'package:sim/screens/desktop/report_and_analysis/desktop_report_and_analysis.dart';
 import 'package:sim/screens/desktop/stocks/desktop_stocks.dart';
 import 'package:sim/screens/general_widgets/nav_element.dart';
 
@@ -25,7 +25,23 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
   @override
   void initState() {
     tabIndex= widget.tabIndex;
-    _tabController = TabController(length:  3, vsync: this, initialIndex: 0);
+    _tabController = TabController(length:  2, vsync: this, initialIndex: 0);
+    _tabController.addListener(() { 
+      switch (_tabController.index) {
+        case 0:
+          HomeController.desktopAppBarTitle.value="Tableau de bord";
+          break;
+        
+        case 1:
+          HomeController.desktopAppBarTitle.value="Stocks";
+          break;
+
+        case 2:
+          // HomeController.desktopAppBarTitle.value="Immobiliers";
+          break;
+        default:
+      }
+    });
     if (kIsWeb) {
       BrowserContextMenu.disableContextMenu();
     }
@@ -63,7 +79,7 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
               child: DesktopLeftNavigationBar(tabController: _tabController, navBarOptions: const [
                 NavElement(title: "Tableau de bord",Icon(Icons.dashboard_customize)),
                 NavElement(title: "Stocks", Icon(BootstrapIcons.box_fill)),
-                NavElement(title: "Rapports & Analyses",Icon(BootstrapIcons.bar_chart_line_fill))
+                // NavElement(title: "Immobilier",Icon(BootstrapIcons.tools))
               ],),
             )),
           Expanded(
@@ -77,7 +93,7 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
                     children: [
                       DesktopDashbord(stocksController: _stocksController,),
                       DesktopStocks(stocksController: _stocksController,),
-                      const DesktopReportAnalysis()
+                      // FixedAssets()
                     ],),
                 ),
               ],

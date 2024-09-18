@@ -28,6 +28,7 @@ class _User{
   late String lastName; 
   late String surname;
   late bool isActivated = true;
+  late DateTime accountExpirationDate;
 
 }
 

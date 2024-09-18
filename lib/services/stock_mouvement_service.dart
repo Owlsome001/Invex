@@ -43,4 +43,8 @@ class StockMouvementService {
   Stream<RealmResultsChanges<StockMovement>> getStockMouvementStream(Stock stock) {
     return stock.getBacklinks<StockMovement>("stock").changes;
   }
+
+  void deleteMouvement(StockMovement mouvement) {
+    _stockMouvementRepository.deleteMouvement(mouvement);
+  }
 }

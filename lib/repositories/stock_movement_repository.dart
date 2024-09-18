@@ -35,17 +35,18 @@ class StockMouvementRepository {
   }
 
    StockMovement insertOne(StockMovement stockMouvement){
-    //Extracting the movement stock
+    // Extraction du stock liée au mouvement
     Stock  stock = stockMouvement.stock!;
-    //Extacting the current stock quantity
+    //Extraction de la quantité actuelle en stock
     double currentStock = stock.quantity;
+     //Extraction de la quantité du mouvement en stock
     double quantity = stockMouvement.quantity;
     return _realm.write((){
       StockMovement savedMovement = _realm.add(stockMouvement);
       if(stockMouvement.moveType==MoveType.input.index){
-        //Update stockQuantity as input move are always validated
+         //Modification du niveau de stock
         stock.quantity = currentStock+quantity;
-        //Set quantityafterMouvement in the mouvement document
+        //Mis a jour de l'attribut quantiteApresMvt 
         savedMovement.quantityAfterMouvement = currentStock+quantity;
       }
       return savedMovement;
@@ -71,6 +72,10 @@ class StockMouvementRepository {
     return false;
   }
 
+  }
+
+  void deleteMouvement(StockMovement mouvement) {
+    _realm.write(() => _realm.delete<StockMovement>(mouvement));
   }
   
 }

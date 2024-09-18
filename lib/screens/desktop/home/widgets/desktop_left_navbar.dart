@@ -39,7 +39,7 @@ class DesktopLeftNavigationBar extends StatelessWidget {
               navBarOptions: const [
                 NavElement(title: "Tableau de bord", Icon(Icons.dashboard_customize)),
                 NavElement(title: "Stocks",Icon(BootstrapIcons.box_fill)),
-                // NavElement(title: "Rapports & Analyses", Icon(BootstrapIcons.bar_chart_line_fill))
+                // NavElement(title: "Immobilisations", Icon(BootstrapIcons.bar_chart_line_fill))
               ],)
           ),
           //Responsive space

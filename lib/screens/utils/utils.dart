@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/screens/general_widgets/sim_dialog.dart';
+import 'package:sim/services/stock_service.dart';
+import 'package:sim/services/stocksheet_service.dart';
+import 'package:toastification/toastification.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 TextTheme createTextTheme(
     BuildContext context, String bodyFontString, String displayFontString) {
@@ -140,4 +144,22 @@ Future<void> showSimDialog(BuildContext context,SimDialog dialog) async{
     return dialog;
   });
   
+}
+
+void showNotification({required String title, required String message, required bool isErrorMessage}){
+   toastification.show(
+            title: Text(title),
+            description: Text(message),
+            style: ToastificationStyle.flatColored,
+            type: isErrorMessage ?ToastificationType.error:ToastificationType.success,
+            showIcon: true,
+            alignment: Alignment.bottomRight,
+            autoCloseDuration: const Duration(seconds: 4,
+            ),
+            callbacks: ToastificationCallbacks(
+              onTap: (toast) async{
+                // await StockSheetService.getSimStockSheetDirectory(type: StockSheetType.pdf).then((value)=>launchUrl(Uri.file(value)));
+              }
+            )
+          );
 }

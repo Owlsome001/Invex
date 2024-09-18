@@ -154,11 +154,44 @@ class DesktopDashbord extends StatelessWidget {
 
                                 RowAction("Supprimer", Icons.delete, ({required int selectedIndex}) async {
                                   await showDialog(context: context, builder: (builder){
-                                    return const AlertDialog(
-                                      title: Text("Supression mouvement"),
-                                      content: Text("Voulez vous vraiment supprimer cet mouvement"),
+                                    return AlertDialog(
+                                      title: const Text("Suppression mouvement"),
+                                      content: Text("Voulez-vous vraiment supprimer cet mouvement  ? \n Details :\n Stock : ${stocksController.recentMovements[selectedIndex].stock!.stockName} \n Quantité : ${stocksController.recentMovements[selectedIndex].moveType == MoveType.output.index?"-":"+"}${stocksController.recentMovements[selectedIndex].quantity} "),
                                       actions: [
-
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.end,
+                                          children: [
+                                            TextButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary.withOpacity(0.3))
+                                                ),
+                                              onPressed: (){
+                                              Navigator.pop(context);
+                                            }, child: const Text("Annuler")),
+                                              
+                                              
+                                              Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                                child: TextButton(
+                                                  onPressed: (){
+                                                    stocksController.deleteMouvement(stocksController.recentMovements[selectedIndex]);
+                                                    Navigator.pop(context);
+                                                    },
+                                                  style: ButtonStyle(
+                                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.error)
+                                                  ), 
+                                                  child: Text(
+                                                    "Supprimer",
+                                                      style: TextStyle(
+                                                          color: Theme.of(context).colorScheme.background
+                                                      ),
+                                                    ),
+                                                  ),
+                                              ),
+                                              
+                                            
+                                          ],
+                                        )
                                       ],
                                     );
                                   });

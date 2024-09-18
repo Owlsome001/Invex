@@ -86,7 +86,13 @@ class AppController {
             AccountController.user = UserService().user;
             initAppStep.value ="Finalisation";
             
-                return HomeController.platformHomeScreen();
+            // if (AccountController.user!.accountExpirationDate.toLocal().isBefore(DateTime.now())) {
+            //       return HomeController.platformHomeScreen();
+            // }else{
+            //       return const MessageScreen(errorMessage: "Compte désactivé");
+            //     }
+
+            return HomeController.platformHomeScreen();
              
           } on Exception catch (e) {
             debugPrint("===> $e");

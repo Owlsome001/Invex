@@ -25,7 +25,7 @@ class StocksController {
    final StockMouvementService _stockMouvementService = StockMouvementService();
    final StockSheetService _stockSheetService = StockSheetService();
    
-   ValueNotifier<int> movementType = ValueNotifier(0);
+   ValueNotifier<int> mouvementType = ValueNotifier(0);
    TextEditingController quantityController = TextEditingController();
    TextEditingController articleNameController = TextEditingController();
    TextEditingController moveReferenceController = TextEditingController();
@@ -149,8 +149,17 @@ class StocksController {
           category: dbCategories[_selectedCategoryIndex],
           measurementUnit: dbUnits[_selectedMeasurementUnitIndex] 
           ),
+
         
-          );}else{
+          );
+          
+            showNotification(
+            title: "Nouveau Stock",
+            message: "Un nouveau Stock vient d'être ajouter",
+            isErrorMessage: false,
+          );
+        
+          }else{
             _stockService.updateStock(stock, 
             category: dbCategories[_selectedCategoryIndex], 
             measurementUnit: dbUnits[_selectedMeasurementUnitIndex], 
@@ -246,18 +255,18 @@ class StocksController {
             double.parse(quantityController.text.trim()),
             moveDateNotifier.value.toUtc(),
             moveReferenceController.text, 
-            movementType.value,
+            mouvementType.value,
             stock: dbStocks[_selectedArticle],
-            status: movementType.value == MoveType.input.index?1:0,
-            justification: movementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
+            status: mouvementType.value == MoveType.input.index?1:0,
+            justification: mouvementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
             ));
         } else {
            _stockMouvementService.updateMouvement(
             stockMovement, reference: 
             moveReferenceController.text, 
             quantity: double.parse(quantityController.text.trim()), 
-            moveType: movementType.value,
-            justification: movementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
+            moveType: mouvementType.value,
+            justification: mouvementType.value == MoveType.output.index? moveJustificatioController.text.trim():null
             );
         }
 
@@ -276,9 +285,11 @@ class StocksController {
    
   }
 
+  //Valider les entrée du formulaire du mouvement
   bool  validateMouvementForm(){
     String formErrorMessage = "";
-    switch (movementType.value) {
+    switch (mouvementType.value) {
+      //Mouvement est de type sortie
       case  1:
         if(moveReferenceController.text.isEmpty&&
         moveJustificatioController.text.isEmpty&&
@@ -347,7 +358,7 @@ class StocksController {
         }
 
       case  0:
-
+        
         if(moveReferenceController.text.isEmpty&&
         quantityController.text.isEmpty){
           formErrorMessage ="Les champs \"Quantité\" et le \"Justification\" ne doivent pas être vides";
@@ -391,7 +402,7 @@ class StocksController {
       moveReferenceController.clear();
       quantityController.clear();
       moveDateNotifier.value = DateTime.now();
-      movementType.value=MoveType.input.index;
+      mouvementType.value=MoveType.input.index;
       selectedArticle =0;
   }
 
@@ -406,6 +417,7 @@ class StocksController {
        AppController.formError.value={"hasError":true, "errorText":"Impossible de confirmer cette sortie car la quantité en stock est inférieur à celle demandée"};
       return false;
     }
+    showNotification(title: "Mouvement valdé", message: "La sortie de ${stockMovement.quantity} a été approuvé.", isErrorMessage: false);
     return true;
   }
 
@@ -421,26 +433,16 @@ class StocksController {
       receivePort.listen((message) { 
         debugPrint("$message");
         if(message=="Done"){
-          toastification.show(
-            title: const Text("Génération terminée"),
-            description: Text("L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est terminée. Le fichier se trouve dans Mes documents, dans le dossier mes document"),
-            style: ToastificationStyle.flatColored,
-            type: ToastificationType.success,
-            showIcon: true,
-            alignment: Alignment.bottomRight,
-            autoCloseDuration: const Duration(seconds: 4)
-            
-          );
+
+          showNotification(
+              title: "Génération terminée", 
+              message: "L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est terminée. Le fichier se trouve dans \"Mes documents\", \"fiches de stocks\" ", 
+              isErrorMessage: false);
         }else if(message=="Access to file is denied"){
-              toastification.show(
-            title: const Text("Génération interrompue"),
-            description: Text("L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est interompu. Le ficher sur lequel l'application écrit est ouvert par un autre application. Veuillez fermer tout les fenêtres excel puis réessayer"),
-            style: ToastificationStyle.flatColored,
-            type: ToastificationType.error,
-            showIcon: true,
-            alignment: Alignment.bottomRight,
-            autoCloseDuration: const Duration(seconds: 4)  
-          );
+            showNotification(
+              title: "Génération interrompue", 
+              message: "L'extraction de la fiche de stock ${dbStocks[_selectedArticle].stockName} est interompu. Le ficher sur lequel l'application écrit est ouvert par un autre application. Veuillez fermer tout les fenêtres excel puis réessayer", 
+              isErrorMessage: true);
           }
       });
       return true;
@@ -471,5 +473,17 @@ class StocksController {
     }else{
       return true;
     }
+  }
+
+  void deleteMouvement(StockMovement mouvement) {
+  try {
+    String stockName = mouvement.stock!.stockName;
+    String quantity = mouvement.quantity.toString();
+  _stockMouvementService.deleteMouvement(mouvement);
+  showNotification(title: "Suppression mouvement", message: "Vous avez supprimer un mouvement de sortie de $quantity sur le stock $stockName",isErrorMessage: false);   
+    } on Exception {
+      //TODO: CATCH
+    }
+    
   }
 }

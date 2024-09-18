@@ -20,7 +20,7 @@ class DesktopMouvementForm extends StatelessWidget {
     stocksController.refreshStockDropDowItem;
     if(stockMovement!=null){
       stocksController.selectedArticle = stocksController.dbStocks.indexOf(stocksController.dbStocks.where((stock) => stock.id==stockMovement!.stock!.id).first);
-      stocksController.movementType.value = MoveType.values[stockMovement!.moveType].index;
+      stocksController.mouvementType.value = MoveType.values[stockMovement!.moveType].index;
       stocksController.moveJustificatioController.text = stockMovement!.justification??"";
       stocksController.moveReferenceController.text = stockMovement!.reference;
       stocksController.quantityController.text = stockMovement!.quantity.toString();
@@ -51,7 +51,7 @@ class DesktopMouvementForm extends StatelessWidget {
                         return const SizedBox();
                       }),
           ),
-          CustomFormFied(field: MouvementTypeFormField(movementTypeNotifier: stocksController.movementType,), fieldName: 'Type transaction',),
+          CustomFormFied(field: MouvementTypeFormField(movementTypeNotifier: stocksController.mouvementType,), fieldName: 'Type transaction',),
           withArtile && stockMovement==null? CustomFormFied(fieldName: "Article", field: CustomDropDown(choices: stocksController.stockDropdowmItems , defaultChoice: 0, onTap: (value){if(value!=null){stocksController.selectedArticle=value;}},)):const SizedBox(),
           CustomFormFied(fieldName: "Référence", field: CustomTextFormField(fieldHint: "ex : Commande MDNA-C", controller: stocksController.moveReferenceController, borderRadius: BorderRadius.zero)),
           CustomFormFied(fieldName: "Quantité", field: CustomTextFormField(fieldHint: "ex : 10.25", controller: stocksController.quantityController, borderRadius: BorderRadius.zero,
@@ -60,7 +60,7 @@ class DesktopMouvementForm extends StatelessWidget {
                     ],
                     keyboardType: TextInputType.number
           )),
-          ValueListenableBuilder<int>(valueListenable: stocksController.movementType, builder:(context, value, widget) {
+          ValueListenableBuilder<int>(valueListenable: stocksController.mouvementType, builder:(context, value, widget) {
             if (value==1) {
               return CustomFormFied(fieldName: "Justification", field: CustomTextFormField(fieldHint: "ex : RAV CL I", controller: stocksController.moveJustificatioController, borderRadius: BorderRadius.zero,));
             }

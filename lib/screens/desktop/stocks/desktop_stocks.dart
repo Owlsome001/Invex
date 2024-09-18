@@ -1,6 +1,7 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/account_controller.dart';
+import 'package:sim/controllers/home_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/desktop/stocks/widgets/stock_form.dart';
 import 'package:sim/screens/desktop/stocks/widgets/stock_sheet_form.dart';
@@ -46,6 +47,7 @@ class DesktopStocks extends StatelessWidget {
                     headers: const ["Référence","Article","Categorie", "Quantité", "Unité de mesure"], 
                     actions: [
                       RowAction("Details", Icons.info, ({required int selectedIndex}){
+                        HomeController.desktopAppBarTitle.value =stocksController.dbStocks[selectedIndex].stockName;
                         StocksController.navigateToStockView(context, selectedIndex, stocksController);
                       },
                       ({required int selectedIndex})=>true
