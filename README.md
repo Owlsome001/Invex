@@ -1,16 +1,16 @@
-# sim
 
-A new Flutter project.
+![Logo](https://github.com/Owlsome001/sim/blob/development/assets/images/logo.png)
 
-## Getting Started
+# SIM
 
-This project is a starting point for a Flutter application.
+SIM is an Inventory Management System. Its avails some features help a warehouse staff managing stocks and tracking some metrics about the whole warehouse.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
+## Features
+
+- Add stocks
+- Add mouvement
+- Approve mouvement
+- Update mouvement
