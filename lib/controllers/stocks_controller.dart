@@ -445,6 +445,8 @@ class StocksController {
               isErrorMessage: true);
           }
       });
+       moveDateNotifier.value=DateTime.now();
+       closingDate.value=DateTime.now();
       return true;
     }else{
       debugPrint("SheetGeneration Validation fails");
