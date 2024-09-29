@@ -28,19 +28,19 @@ Receive alerts for low stock levels.
 
 #### 1. Authentication Screen(fr)
 
-![Login](screenshots\Login_Screenshot_20240929.png)
+![Login](screenshots/Login_Screenshot_20240929.png)
 
 #### 2. Dashboard Screen(fr)
 
-![Dashboard](screenshots\Dashboard_Screenshot_20240929.png)
+![Dashboard](screenshots/Dashboard_Screenshot_20240929.png)
 
 #### 2. Stocks Screen(fr)
 
-![Stocks](screenshots\Stocks_Screenshot_20240929.png)
+![Stocks](screenshots/Stocks_Screenshot_20240929.png)
 
 #### 2. Stock Details Screen(fr)
 
-![Stock Details](screenshots\StockDetails_Screenshot_20240929.png)
+![Stock Details](screenshots/StockDetails_Screenshot_20240929.png)
 
 ## Future plans 
 ### Stock Management
