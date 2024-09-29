@@ -1,16 +1,16 @@
-# sim
 
-A new Flutter project.
+<img src="https://github.com/Owlsome001/sim/blob/development/assets/images/logo.png" width="20%" height="20%">
+## InvEx
 
-## Getting Started
+InvEx(Inventory Excellence) is an Inventory Management System. Its avails some features to help a warehouse staff managing stocks and tracking some metrics about the whole warehouse.
 
-This project is a starting point for a Flutter application.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Features
+
+- Add stocks
+- Add mouvement
+- Approve mouvement
+- Update mouvement
+- StockSheet in Excel
