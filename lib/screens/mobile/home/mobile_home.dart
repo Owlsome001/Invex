@@ -61,20 +61,20 @@ class _MobileHomeScreenState extends State<MobileHomeScreen> with TickerProvider
         navBarOptions:  [
           NavElement(title: "Acceuil", Icon(
             Icons.dashboard_customize,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
             
             )),
           NavElement(title: "Stocks", Icon(
             BootstrapIcons.box_fill,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           )),
           NavElement(title: "Rapports", Icon(
             BootstrapIcons.bar_chart_line_fill,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
           )),
           NavElement(title: "Paramètres", Icon(
             Icons.settings,
-            color: Theme.of(context).colorScheme.onBackground,
+            color: Theme.of(context).colorScheme.onSurface,
             ))
         ],
       ),

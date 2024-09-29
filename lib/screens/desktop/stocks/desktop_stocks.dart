@@ -79,7 +79,7 @@ class DesktopStocks extends StatelessWidget {
                     tableTitleWiget: SizedBox(
                       height: 30,
                       child: SearchBar(
-                        elevation:  MaterialStateProperty.all<double>(0.0),
+                        elevation:  WidgetStateProperty.all<double>(0.0),
                         leading: const Icon(Icons.search),
                       ),
                     )

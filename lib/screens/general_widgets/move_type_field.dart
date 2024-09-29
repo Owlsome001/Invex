@@ -16,14 +16,14 @@ class MouvementTypeFormField extends StatelessWidget {
                                           child: Container(
                                             padding: const EdgeInsets.all(5),
                                             decoration: BoxDecoration(
-                                              color: value==0?Theme.of(context).colorScheme.tertiary:Theme.of(context).colorScheme.background,
+                                              color: value==0?Theme.of(context).colorScheme.tertiary:Theme.of(context).colorScheme.surface,
                                               border: Border.all(color:Theme.of(context).colorScheme.primary),
                                             ),
                                             child:  Center(
                                               child: Text(
                                                 "Entrée",
                                                 style: TextStyle(
-                                                  color: value==0?Theme.of(context).colorScheme.background:null
+                                                  color: value==0?Theme.of(context).colorScheme.surface:null
                                                 ),
                                                 )),
                                           ),
@@ -38,14 +38,14 @@ class MouvementTypeFormField extends StatelessWidget {
                                           child: Container(
                                             padding: const EdgeInsets.all(5),
                                             decoration: BoxDecoration(
-                                              color: value==1?Theme.of(context).colorScheme.primary:Theme.of(context).colorScheme.background,
+                                              color: value==1?Theme.of(context).colorScheme.primary:Theme.of(context).colorScheme.surface,
                                               border: Border.all(color:Theme.of(context).colorScheme.primary), 
                                             ),
                                             child:  Center(
                                               child: Text(
                                                 "Sortie",
                                                 style: TextStyle(
-                                                color: value==1?Theme.of(context).colorScheme.background:null
+                                                color: value==1?Theme.of(context).colorScheme.surface:null
                                                 ),
                                                 )),
                                           ),

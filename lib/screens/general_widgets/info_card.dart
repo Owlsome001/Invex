@@ -9,7 +9,7 @@ class InfoCard extends StatelessWidget {
     return Container(
               margin: const EdgeInsets.symmetric(vertical: 10),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
                 border: Border.all(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.2)
                 ),
@@ -28,7 +28,7 @@ class InfoCard extends StatelessWidget {
                     child: Center(child: Text(title)),
                   ),
                   Container(
-                    margin: EdgeInsets.all(20),
+                    margin: const EdgeInsets.all(20),
                     child: content)
                 ],
               ),

@@ -17,7 +17,8 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
     String role,
     String firstName,
     String lastName,
-    String surname, {
+    String surname,
+    DateTime accountExpirationDate, {
     bool isActivated = true,
   }) {
     if (!_defaultsSet) {
@@ -33,6 +34,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
     RealmObjectBase.set(this, 'lastName', lastName);
     RealmObjectBase.set(this, 'surname', surname);
     RealmObjectBase.set(this, 'isActivated', isActivated);
+    RealmObjectBase.set(this, 'accountExpirationDate', accountExpirationDate);
   }
 
   User._();
@@ -84,6 +86,13 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
       RealmObjectBase.set(this, 'isActivated', value);
 
   @override
+  DateTime get accountExpirationDate =>
+      RealmObjectBase.get<DateTime>(this, 'accountExpirationDate') as DateTime;
+  @override
+  set accountExpirationDate(DateTime value) =>
+      RealmObjectBase.set(this, 'accountExpirationDate', value);
+
+  @override
   Stream<RealmObjectChanges<User>> get changes =>
       RealmObjectBase.getChanges<User>(this);
 
@@ -104,6 +113,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
       'lastName': lastName.toEJson(),
       'surname': surname.toEJson(),
       'isActivated': isActivated.toEJson(),
+      'accountExpirationDate': accountExpirationDate.toEJson(),
     };
   }
 
@@ -119,6 +129,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
         'firstName': EJsonValue firstName,
         'lastName': EJsonValue lastName,
         'surname': EJsonValue surname,
+        'accountExpirationDate': EJsonValue accountExpirationDate,
       } =>
         User(
           fromEJson(id),
@@ -128,6 +139,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
           fromEJson(firstName),
           fromEJson(lastName),
           fromEJson(surname),
+          fromEJson(accountExpirationDate),
           isActivated: fromEJson(ejson['isActivated'], defaultValue: true),
         ),
       _ => raiseInvalidEJson(ejson),
@@ -148,6 +160,7 @@ class User extends _User with RealmEntity, RealmObjectBase, RealmObject {
       SchemaProperty('lastName', RealmPropertyType.string),
       SchemaProperty('surname', RealmPropertyType.string),
       SchemaProperty('isActivated', RealmPropertyType.bool),
+      SchemaProperty('accountExpirationDate', RealmPropertyType.timestamp),
     ]);
   }();
 

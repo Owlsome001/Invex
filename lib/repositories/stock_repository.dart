@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/models/models.dart' as models;

@@ -66,7 +66,7 @@ class _DesktopHomeScreenState extends State<DesktopHomeScreen> with TickerProvid
   @override
   Widget build(BuildContext context) {
     return  Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Row(
         children: [
           Expanded(

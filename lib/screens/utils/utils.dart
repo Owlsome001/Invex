@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/screens/general_widgets/sim_dialog.dart';
-import 'package:sim/services/stock_service.dart';
-import 'package:sim/services/stocksheet_service.dart';
 import 'package:toastification/toastification.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 TextTheme createTextTheme(
     BuildContext context, String bodyFontString, String displayFontString) {
@@ -29,7 +26,7 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
   return  await showDialog(
                   barrierDismissible: false,
                   context: context, builder: (context) {
-                     ScrollController _scrollController = ScrollController();
+                     ScrollController scrollController = ScrollController();
                     return Center(
                       child: FittedBox(
                         fit: BoxFit.contain,
@@ -37,7 +34,7 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                         width: MediaQuery.of(context).size.width/2.5,
                         height: MediaQuery.of(context).size.height/1.8,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.background,
+                          color: Theme.of(context).colorScheme.surface,
                           borderRadius: BorderRadius.circular(10)
                         ),
                         child: Column(
@@ -57,7 +54,7 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.normal,
-                                    color: Theme.of(context).colorScheme.onBackground,
+                                    color: Theme.of(context).colorScheme.onSurface,
                                     decoration: TextDecoration.none
                                   ),
                                 ),
@@ -66,7 +63,7 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                             ),
                             Expanded(
                               child: SingleChildScrollView(
-                                controller: _scrollController,
+                                controller: scrollController,
                                 child: Center(child: form))),
                             Container(
                               decoration : BoxDecoration(
@@ -87,11 +84,11 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                               AppController.formError.value = {"hasError":false, "errorText":""};
                                               Navigator.of(context, rootNavigator: true).pop();
                                             },
-                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.primary)), 
+                                            style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(Theme.of(context).colorScheme.primary)), 
                                             child: Text(
                                               "Annuler",
                                               style: TextStyle(
-                                                color: Theme.of(context).colorScheme.background
+                                                color: Theme.of(context).colorScheme.surface
                                               ),
                                               ),
                                             ),
@@ -104,18 +101,18 @@ Future<dynamic> showSimFormModal({required BuildContext context, required Widget
                                         Expanded(
                                           child: TextButton(
                                             onPressed:(){
-                                              _scrollController.animateTo(
-                                                 _scrollController.position.minScrollExtent,
+                                              scrollController.animateTo(
+                                                 scrollController.position.minScrollExtent,
                                                   duration: const Duration(milliseconds: 500),
                                                   curve: Curves.ease
                                               );
                                               onSave()
                                               ;}, 
-                                            style: ButtonStyle(backgroundColor: MaterialStatePropertyAll<Color>(Theme.of(context).colorScheme.secondary)), 
+                                            style: ButtonStyle(backgroundColor: WidgetStatePropertyAll<Color>(Theme.of(context).colorScheme.secondary)), 
                                             child: Text(
                                               "Enregister",
                                               style: TextStyle(
-                                                color: Theme.of(context).colorScheme.background
+                                                color: Theme.of(context).colorScheme.surface
                                               ),
                                               )),
                                         )

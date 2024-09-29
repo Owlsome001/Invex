@@ -16,7 +16,7 @@ class MouvementConfirmationCard extends StatelessWidget {
         children: [
           Text(
             "Voulez-vous vraiment valider la sortie de (-${stockMovement.quantity}) dans le stock ${stockMovement.stock?.stockName}",
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 15
             ),
             ),

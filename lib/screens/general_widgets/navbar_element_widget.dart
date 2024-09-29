@@ -47,7 +47,7 @@ class _NavBarElementWigdetState extends State<NavBarElementWigdet> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onBackground
+                    color: Theme.of(context).colorScheme.onSurface
                   ),
                   ),
               )
@@ -115,7 +115,7 @@ class _CustomNavBarElementWigdetState extends State<CustomNavBarElementWigdet> {
                   style: TextStyle(
                     fontWeight: FontWeight.w500,
                     fontSize: 12,
-                    color: Theme.of(context).colorScheme.onBackground
+                    color: Theme.of(context).colorScheme.onSurface
                   ),
                   ),
               )

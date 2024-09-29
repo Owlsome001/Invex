@@ -29,7 +29,7 @@ class DesktopStockView extends StatelessWidget {
     stocksController.selectedArticle=stockIndex;
     Stock stock = stocksController.getcurrentStock(stockIndex);
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       body: Row(
         children: [
           Expanded(
@@ -202,7 +202,7 @@ class DesktopStockView extends StatelessWidget {
                                                                           children: [
                                                                             TextButton(
                                                                               style: ButtonStyle(
-                                                                                  backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.primary.withOpacity(0.3))
+                                                                                  backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.primary.withOpacity(0.3))
                                                                                 ),
                                                                               onPressed: (){
                                                                               Navigator.pop(context);
@@ -217,12 +217,12 @@ class DesktopStockView extends StatelessWidget {
                                                                                     Navigator.pop(context);
                                                                                     },
                                                                                   style: ButtonStyle(
-                                                                                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.error)
+                                                                                    backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.error)
                                                                                   ), 
                                                                                   child: Text(
                                                                                     "Supprimer",
                                                                                       style: TextStyle(
-                                                                                          color: Theme.of(context).colorScheme.background
+                                                                                          color: Theme.of(context).colorScheme.surface
                                                                                       ),
                                                                                     ),
                                                                                   ),

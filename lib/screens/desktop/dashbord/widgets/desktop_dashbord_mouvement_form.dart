@@ -27,7 +27,7 @@ class DesktopMouvementForm extends StatelessWidget {
     }
     return Card(
       borderOnForeground: false,
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       elevation: 0.0,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,

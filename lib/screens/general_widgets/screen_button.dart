@@ -13,15 +13,15 @@ class ScreenButton extends StatelessWidget {
                   }, 
                   icon: Icon(
                     iconData,
-                    color:Theme.of(context).colorScheme.background,
+                    color:Theme.of(context).colorScheme.surface,
                     )
                   , 
                   label: Text(
                     buttonText,
-                    style: TextStyle(color: Theme.of(context).colorScheme.background),
+                    style: TextStyle(color: Theme.of(context).colorScheme.surface),
                     ),
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.secondary),
+                    backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.secondary),
                   ) ,
                   );
   }

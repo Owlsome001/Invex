@@ -2,10 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/stocks_controller.dart';
-import 'package:sim/screens/general_widgets/custom_dropdown_field.dart';
 import 'package:sim/screens/general_widgets/custom_form_field.dart';
 import 'package:sim/screens/general_widgets/date_picker_formfield.dart';
-import 'package:sim/services/stocksheet_service.dart';
 
 class StockSheetForm extends StatelessWidget {
   const StockSheetForm({super.key, required this.stocksController});
@@ -14,7 +12,7 @@ class StockSheetForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       borderOnForeground: false,
-      color: Theme.of(context).colorScheme.background,
+      color: Theme.of(context).colorScheme.surface,
       elevation: 0.0,
       child: Center(
         child: Column(

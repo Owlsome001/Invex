@@ -2,7 +2,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';
-import 'package:sim/controllers/login_controller.dart';
 import 'package:sim/models/models.dart';
 import 'package:sim/services/user_service.dart';
 

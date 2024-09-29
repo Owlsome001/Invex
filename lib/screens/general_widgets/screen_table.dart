@@ -1,7 +1,5 @@
 import 'package:bootstrap_icons/bootstrap_icons.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:sim/controllers/stocks_controller.dart';
 import 'package:sim/screens/utils/row_action.dart';
 
 class ScreenTable extends StatefulWidget {
@@ -96,7 +94,7 @@ class _ScreenTableState extends State<ScreenTable> {
                             onTapDown: (TapDownDetails details) async {
                               _storePosition(details);
                               await showMenu(
-                                surfaceTintColor: Theme.of(context).colorScheme.background,
+                                surfaceTintColor: Theme.of(context).colorScheme.surface,
                                 context: context, 
                                 position:  RelativeRect.fromLTRB(_tapPosition.dx,
                                             _tapPosition.dy,

@@ -3,6 +3,7 @@
 #
 
 list(APPEND FLUTTER_PLUGIN_LIST
+  gtk
   realm
   screen_retriever
   url_launcher_linux

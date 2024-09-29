@@ -14,7 +14,7 @@ class SimDialog extends StatelessWidget {
       actions: [ 
         TextButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.error)
+            backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.error)
           ),
           onPressed: (){
             Navigator.of(context, rootNavigator: true).pop();
@@ -22,18 +22,18 @@ class SimDialog extends StatelessWidget {
           child: Text(
             "Annuler",
             style: TextStyle(
-              color: Theme.of(context).colorScheme.background
+              color: Theme.of(context).colorScheme.surface
             ),
             )),
         ...actions.map((action) => TextButton(
           style: ButtonStyle(
-            backgroundColor: MaterialStateProperty.all<Color>(Theme.of(context).colorScheme.secondary)
+            backgroundColor: WidgetStateProperty.all<Color>(Theme.of(context).colorScheme.secondary)
           ),
           onPressed: ()=>action.onTap(), 
           child: Text(
             action.title,
             style: TextStyle(
-              color: Theme.of(context).colorScheme.background
+              color: Theme.of(context).colorScheme.surface
             ),
             ))),
 

@@ -18,7 +18,7 @@ class StockInfoRow extends StatelessWidget {
         Expanded(
           child: Text(
             infoValue,
-            style: TextStyle(
+            style: const TextStyle(
                 fontWeight: FontWeight.bold
             ),
             ))

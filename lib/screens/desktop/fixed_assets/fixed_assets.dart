@@ -26,7 +26,7 @@ class FixedAssets extends StatelessWidget {
                   iconData: BootstrapIcons.plus_circle, 
                   onTap: () async {
                     await showSimFormModal(
-                      context: context, form: Text("Test"), 
+                      context: context, form: const Text("Test"), 
                       title: "Nouvel immobilisation", onSave:(){});
                   })
               ],
@@ -55,7 +55,7 @@ class FixedAssets extends StatelessWidget {
                       RowAction("Fiche d'amortissement", Icons.receipt, ({required int selectedIndex}) async {
                         await showSimFormModal(
                           context: context, 
-                          form: Text("Test"), 
+                          form: const Text("Test"), 
                           title: "Générer fiche de stock", 
                           onSave: () async{
                           
@@ -67,7 +67,7 @@ class FixedAssets extends StatelessWidget {
                     tableTitleWiget: SizedBox(
                       height: 30,
                       child: SearchBar(
-                        elevation:  MaterialStateProperty.all<double>(0.0),
+                        elevation:  WidgetStateProperty.all<double>(0.0),
                         leading: const Icon(Icons.search),
                       ),
                     )

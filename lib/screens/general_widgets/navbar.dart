@@ -28,7 +28,7 @@ class NavBar extends StatelessWidget {
       }),
     ): BottomNavigationBar(
       currentIndex: tabController.index,
-      backgroundColor: Theme.of(context).colorScheme.background,
+      backgroundColor: Theme.of(context).colorScheme.surface,
       onTap: (tabIndex){
         
         if (tabIndex<=tabController.length-1) {
@@ -43,7 +43,7 @@ class NavBar extends StatelessWidget {
           Theme.of(context).colorScheme.tertiary.withOpacity(0.7),
       showUnselectedLabels: true,
       items: navBarOptions.map((navItem) => BottomNavigationBarItem(
-        backgroundColor: Theme.of(context).colorScheme.background,
+        backgroundColor: Theme.of(context).colorScheme.surface,
         icon: navItem.icon,
         activeIcon: Icon(navItem.icon.icon,
         color: Theme.of(context).colorScheme.secondary,

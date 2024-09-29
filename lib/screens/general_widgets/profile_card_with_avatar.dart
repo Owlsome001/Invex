@@ -2,10 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:sim/controllers/account_controller.dart';
-import 'package:sim/controllers/app_controller.dart';
-import 'package:sim/controllers/home_controller.dart';
-import 'package:sim/controllers/login_controller.dart';
-import 'package:sim/screens/general_widgets/init_app_screen.dart';
 
 class AvatarCard extends StatefulWidget {
   const AvatarCard({super.key});
@@ -84,25 +80,25 @@ class _AvatarCardState extends State<AvatarCard> {
                   child:Text(
                     accountController.avatarInitials,
                     style: TextStyle(
-                      color: Theme.of(context).colorScheme.background),
+                      color: Theme.of(context).colorScheme.surface),
                     ),
                 ),
                 !Platform.isAndroid? Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 10),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
                         accountController.userDisplayName,
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                         ),
                       Text(
                         accountController.role,
-                          style: TextStyle(
+                          style: const TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.w100,
                         ),

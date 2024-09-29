@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:flutter/foundation.dart';
 import 'package:realm/realm.dart';
 import 'package:sim/controllers/app_controller.dart';
 import 'package:sim/controllers/login_controller.dart';

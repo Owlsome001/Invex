@@ -11,7 +11,7 @@ class CustomAppBar extends StatelessWidget {
       padding:const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.onPrimary,
-        border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.onBackground.withOpacity(0.2)))
+        border: Border(bottom: BorderSide(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)))
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

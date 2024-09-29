@@ -30,7 +30,7 @@ class FormBouton extends StatelessWidget {
                 onPress();
               },
               child: Text(boutonTitle,
-              style: TextStyle(color: Theme.of(context).colorScheme.background),
+              style: TextStyle(color: Theme.of(context).colorScheme.surface),
               )),
           ),
         ),
